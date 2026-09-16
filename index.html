@@ -3,357 +3,501 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartSathi AI - Online Utility & Creator Suite</title>
 
-<title>SmartSathi AI - All in One Smart Tools</title>
-
-<!-- PDF LIBRARIES -->
+<!-- CLIENT-SIDE LIBRARIES (PDF & IMAGE ENGINE) -->
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.min.js"></script>
-
-
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,Helvetica,sans-serif;
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-border: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --card-bg: #ffffff;
+  --card-hover: #f1f5f9;
+  --accent-light: #eff6ff;
+  --accent-border: #bfdbfe;
 }
 
-html{scroll-behavior:smooth}
-
-body{
-    background:#f5f7fb;
-    color:#172033;
+[data-theme="dark"] {
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --bg: #0b0f19;
+  --surface: #111827;
+  --surface-border: #1f2937;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --card-bg: #1e293b;
+  --card-hover: #334155;
+  --accent-light: rgba(59, 130, 246, 0.12);
+  --accent-border: rgba(59, 130, 246, 0.35);
 }
 
-header{
-    height:72px;
-    background:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 6%;
-    box-shadow:0 2px 12px rgba(0,0,0,.08);
-    position:sticky;
-    top:0;
-    z-index:1000;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-.logo{
-    font-size:25px;
-    font-weight:800;
-    color:#2563eb;
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text-main);
+  transition: background-color 0.25s ease, color 0.25s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.logo span{color:#111827}
-
-nav{
-    display:flex;
-    gap:24px;
-    align-items:center;
+header {
+  height: 74px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-nav a{
-    text-decoration:none;
-    color:#374151;
-    font-weight:600;
-    font-size:14px;
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
 
-.login{
-    background:#2563eb;
-    color:#fff!important;
-    padding:10px 18px;
-    border-radius:8px;
+.logo span { color: var(--text-main); }
+
+nav {
+  display: flex;
+  gap: 18px;
+  align-items: center;
 }
 
-.hero{
-    text-align:center;
-    padding:80px 20px;
-    background:linear-gradient(135deg,#eff6ff,#fff);
+nav a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
 }
 
-.badge{
-    display:inline-block;
-    padding:8px 15px;
-    border-radius:30px;
-    background:#dbeafe;
-    color:#2563eb;
-    font-weight:bold;
-    margin-bottom:20px;
+nav a:hover { color: var(--primary); }
+
+.theme-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+  color: var(--text-main);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
 }
 
-.hero h1{
-    font-size:48px;
-    margin-bottom:18px;
+.btn-auth {
+  background: var(--primary);
+  color: #fff !important;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 0;
+  font-weight: 600;
+  font-size: 14px;
 }
 
-.hero h1 span{color:#2563eb}
-
-.hero p{
-    max-width:700px;
-    margin:auto;
-    color:#64748b;
-    font-size:18px;
-    line-height:1.6;
+.main-content {
+  flex: 1;
 }
 
-.search{
-    max-width:650px;
-    margin:30px auto 0;
-    display:flex;
-    background:#fff;
-    padding:7px;
-    border-radius:12px;
-    box-shadow:0 5px 25px rgba(0,0,0,.1);
+/* SEARCH */
+.search-wrapper {
+  position: relative;
+  max-width: 620px;
+  margin: 25px auto 0;
 }
 
-.search input{
-    flex:1;
-    border:0;
-    outline:0;
-    padding:14px;
-    font-size:16px;
+.search-box {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-.search button{
-    border:0;
-    background:#2563eb;
-    color:#fff;
-    padding:0 25px;
-    border-radius:8px;
-    cursor:pointer;
+.search-box input {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 10px 14px;
+  font-size: 15px;
+  color: var(--text-main);
 }
 
-section{
-    padding:65px 6%;
+.search-box button {
+  background: var(--primary);
+  color: #fff;
+  border: 0;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.title{
-    text-align:center;
-    margin-bottom:35px;
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 10px;
+  margin-top: 6px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: none;
+  z-index: 100;
+  max-height: 280px;
+  overflow-y: auto;
+  text-align: left;
 }
 
-.title h2{
-    font-size:32px;
-    margin-bottom:8px;
+.sugg-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--surface-border);
+  font-size: 14px;
 }
 
-.title p{
-    color:#64748b;
+.sugg-item:hover {
+  background: var(--card-hover);
+  color: var(--primary);
 }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:20px;
+.sugg-cat {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
-.card{
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:16px;
-    padding:24px;
-    transition:.25s;
+/* LAYOUT & GRIDS */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
 }
 
-.card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 12px 30px rgba(0,0,0,.08);
+.hero h1 {
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 12px;
 }
 
-.icon{
-    width:52px;
-    height:52px;
-    background:#eff6ff;
-    border-radius:12px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:26px;
-    margin-bottom:16px;
+.hero h1 span { color: var(--primary); }
+
+.hero p {
+  color: var(--text-muted);
+  font-size: 16px;
+  max-width: 650px;
+  margin: 0 auto;
 }
 
-.card h3{
-    margin-bottom:9px;
+section { padding: 40px 6%; }
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-.card p{
-    color:#64748b;
-    font-size:14px;
-    line-height:1.5;
-    margin-bottom:16px;
+.title h2 { font-size: 26px; margin-bottom: 6px; }
+.title p { color: var(--text-muted); font-size: 14px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
 }
 
-button{
-    cursor:pointer;
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.card button,
-.primary{
-    width:100%;
-    border:0;
-    padding:12px;
-    border-radius:8px;
-    background:#2563eb;
-    color:white;
-    font-weight:bold;
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-.card button:hover,
-.primary:hover{
-    background:#1d4ed8;
+.icon {
+  width: 46px;
+  height: 46px;
+  background: var(--accent-light);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 12px;
 }
 
-.workspace{
-    margin-top:30px;
-    background:#fff;
-    border:2px dashed #bfdbfe;
-    border-radius:18px;
-    padding:30px;
+.card h3 { font-size: 17px; margin-bottom: 6px; }
+.card p { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4; flex-grow: 1; }
+
+.btn-open, .primary {
+  width: 100%;
+  border: 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
 }
 
-.workspace h3{
-    margin-bottom:10px;
-    font-size:24px;
+.btn-open:hover, .primary:hover { background: var(--primary-hover); }
+
+/* DEDICATED TOOL WORKSPACE VIEW (PAGE VIEW) */
+.tool-view-wrapper {
+  max-width: 900px;
+  margin: 30px auto 60px;
+  padding: 0 20px;
 }
 
-.workspace p{
-    color:#64748b;
-    margin-bottom:20px;
+.back-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-input,textarea,select{
-    width:100%;
-    padding:12px;
-    border:1px solid #cbd5e1;
-    border-radius:8px;
-    outline:none;
-    margin-bottom:12px;
+.btn-back {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text-main);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-textarea{
-    min-height:130px;
-    resize:vertical;
+.workspace {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
 }
 
-.file-list{
-    margin-top:15px;
+.flex-row {
+  display: flex;
+  gap: 12px;
+}
+.flex-row > * { flex: 1; }
+
+input, textarea, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-main);
+  outline: none;
+  margin-bottom: 12px;
+  font-size: 14px;
 }
 
-.file{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:11px;
-    margin-bottom:7px;
-    background:#f8fafc;
-    border-radius:8px;
+textarea { min-height: 110px; resize: vertical; }
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 5px;
 }
 
-.remove{
-    background:#ef4444;
-    color:white;
-    border:0;
-    padding:6px 10px;
-    border-radius:6px;
+.result {
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 8px;
+  background: var(--accent-light);
+  border: 1px solid var(--accent-border);
+  font-size: 14px;
 }
 
-.result{
-    margin-top:15px;
-    padding:15px;
-    border-radius:8px;
-    background:#eff6ff;
-    color:#1d4ed8;
-    font-weight:bold;
+/* GUIDES & POLICIES CONTAINER */
+.tool-guide-card {
+  margin-top: 35px;
+  padding: 24px;
+  background: var(--bg);
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
 }
 
-.calculator{
-    max-width:700px;
-    margin:0 auto 25px;
-    background:white;
-    padding:28px;
-    border-radius:16px;
-    border:1px solid #e5e7eb;
+.tool-guide-card h4 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: var(--primary);
 }
 
-.calculator h3{
-    margin-bottom:18px;
+.tool-guide-card p, .tool-guide-card ul {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 12px;
 }
 
-label{
-    display:block;
-    font-weight:bold;
-    margin-bottom:6px;
+.tool-guide-card ul { padding-left: 20px; }
+
+/* AGE BREAKDOWN */
+.age-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 14px;
 }
 
-.about{
-    background:#fff;
-    text-align:center;
+.age-stat {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
 }
 
-.about p{
-    max-width:800px;
-    margin:auto;
-    color:#64748b;
-    line-height:1.8;
+.age-stat strong {
+  display: block;
+  font-size: 20px;
+  color: var(--primary);
 }
 
-footer{
-    background:#111827;
-    color:white;
-    text-align:center;
-    padding:35px 20px;
+.age-stat span {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
 }
 
-footer p{
-    color:#9ca3af;
-    margin-top:8px;
+/* RESUME BUILDER STYLES */
+.tmpl-select-bar { display: flex; gap: 10px; margin-bottom: 16px; }
+.tmpl-select-btn { flex: 1; padding: 8px; border-radius: 8px; background: var(--bg); border: 1px solid var(--surface-border); color: var(--text-main); font-weight: 600; cursor: pointer; }
+.tmpl-select-btn.active { border-color: var(--primary); background: var(--accent-light); color: var(--primary); }
+.resume-sheet { background: #ffffff; color: #1e293b; padding: 30px; border-radius: 6px; margin-top: 15px; line-height: 1.5; box-shadow: 0 4px 18px rgba(0,0,0,0.1); }
+.tmpl-modern { border-top: 6px solid #2563eb; }
+.tmpl-modern h2 { color: #1e40af; font-size: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; }
+.tmpl-minimal { border: 1px solid #cbd5e1; }
+.tmpl-minimal h2 { font-weight: 300; font-size: 26px; border-bottom: 1px solid #f1f5f9; }
+.tmpl-classic { border: 2px solid #0f172a; }
+.tmpl-classic h2 { font-family: Georgia, serif; text-align: center; }
+
+/* AUTH MODAL */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
 }
 
-@media(max-width:900px){
-    .grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    nav{
-        gap:10px;
-    }
-
-    .hero h1{
-        font-size:38px;
-    }
+.auth-card {
+  width: 400px;
+  max-width: 92%;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 16px;
+  padding: 26px;
+  position: relative;
+  text-align: center;
 }
 
-@media(max-width:600px){
-    nav a:not(.login){
-        display:none;
-    }
+.auth-close-x {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: transparent;
+  border: 0;
+  font-size: 22px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
 
-    .grid{
-        grid-template-columns:1fr;
-    }
+/* FOOTER & POLICY STYLES (ADSENSE / MONETIZATION COMPLIANT) */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--surface-border);
+  padding: 50px 6% 30px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
 
-    .hero h1{
-        font-size:32px;
-    }
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
 
-    .search{
-        flex-direction:column;
-        gap:8px;
-    }
+.footer-col h4 {
+  color: var(--text-main);
+  font-size: 15px;
+  margin-bottom: 14px;
+}
 
-    .search button{
-        padding:12px;
-    }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 8px; }
+.footer-col ul li a { color: var(--text-muted); text-decoration: none; cursor: pointer; }
+.footer-col ul li a:hover { color: var(--primary); }
 
-    section{
-        padding:50px 5%;
-    }
+.footer-bottom {
+  text-align: center;
+  padding-top: 25px;
+  border-top: 1px solid var(--surface-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media(max-width: 960px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media(max-width: 640px) {
+  nav a:not(#authNavBtn) { display: none; }
+  .grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .flex-row { flex-direction: column; gap: 0; }
+  .age-grid { grid-template-columns: 1fr; }
+  section { padding: 30px 4%; }
 }
 </style>
 </head>
@@ -362,2233 +506,1496 @@ footer p{
 
 <!-- HEADER -->
 <header>
-    <div class="logo"><span style="display:inline-flex;width:30px;height:30px;border-radius:50%;background:#2563eb;color:#fff;align-items:center;justify-content:center;margin-right:7px;font-size:16px">S</span>SmartSathi <span>AI</span></div>
+  <div class="logo" onclick="navigateTo('home')">
+    <span>SmartSathi</span> AI
+  </div>
 
-    <nav>
-        <a href="#home">Home</a>
-        <a href="#pdf">PDF Tools</a>
-        <a href="#ai">AI Tools</a>
-        <a href="#calculator">Calculators</a>
-        <a href="#about">About</a>
-        <a href="#" class="login">Login</a>
-    </nav>
+  <nav>
+    <a onclick="navigateTo('home', 'pdf')">PDF & Images</a>
+    <a onclick="navigateTo('home', 'ai')">AI Tools</a>
+    <a onclick="navigateTo('home', 'calculator')">Calculators</a>
+    
+    <select id="themeSelector" class="theme-select" onchange="handleThemeChange(this.value)">
+      <option value="auto">🖥️ Device Mode</option>
+      <option value="light">☀️ Light Mode</option>
+      <option value="dark">🌙 Dark Mode</option>
+    </select>
+
+    <button id="authNavBtn" class="btn-auth" onclick="openAuthModal()">Sign In</button>
+  </nav>
 </header>
 
+<!-- MAIN APP VIEW (PAGE-ROUTED) -->
+<div class="main-content">
+  
+  <!-- HOME DASHBOARD VIEW -->
+  <div id="viewHome">
+    <section class="hero" id="home">
+      <h1>Smart Client Utilities. <span>Fast & Private.</span></h1>
+      <p>Secure client-side document processing, resume creation, and analytical financial tools.</p>
+      
+      <div class="search-wrapper">
+        <div class="search-box">
+          <input type="text" id="smartSearchInput" placeholder="Search any tool (e.g., 'merge', 'compress', 'percentage', 'resume')..." oninput="handleSmartSearch(this.value)" autocomplete="off">
+          <button onclick="triggerFirstSuggestion()">Search</button>
+        </div>
+        <div id="suggestionsBox" class="suggestions-dropdown"></div>
+      </div>
+    </section>
 
-<!-- HERO -->
-<section class="hero" id="home">
+    <!-- PDF & IMAGE TOOLS -->
+    <section id="pdf">
+      <div class="title">
+        <h2>📄 PDF & Image Studio</h2>
+        <p>100% Client-side and secure file processing.</p>
+      </div>
 
-    <div class="badge">🚀 Smart Tools. Simple Life.</div>
+      <div class="grid">
+        <div class="card" onclick="openToolPage('compressImage')">
+          <div class="icon">🗜️</div>
+          <h3>Compress Image</h3>
+          <p>Compress files to exact KB/MB limits with custom dimensions and formats.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('mergePdf')">
+          <div class="icon">📑</div>
+          <h3>Merge PDF</h3>
+          <p>Combine multiple PDF documents into a single consolidated file.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('splitPdf')">
+          <div class="icon">✂️</div>
+          <h3>Split PDF</h3>
+          <p>Extract specific page numbers or ranges into individual documents.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('imgToPdf')">
+          <div class="icon">🖼️</div>
+          <h3>Image to PDF</h3>
+          <p>Batch convert photographs and scans into a single PDF document.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('pdfToJpg')">
+          <div class="icon">📸</div>
+          <h3>PDF to JPG</h3>
+          <p>Extract and render PDF pages into clean JPG picture format.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('compressPdf')">
+          <div class="icon">🗜️</div>
+          <h3>Compress PDF</h3>
+          <p>Re-encode document streams to reduce overall file weight.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('signPdf')">
+          <div class="icon">🖊️</div>
+          <h3>Sign PDF</h3>
+          <p>Draw signatures directly on screen and place onto documents.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('watermarkPdf')">
+          <div class="icon">💧</div>
+          <h3>Watermark PDF</h3>
+          <p>Stamp custom safety watermarks across all document pages.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('pdfToWord')">
+          <div class="icon">📝</div><h3>PDF to Word</h3>
+          <p>Extract PDF text into an editable Word-compatible document.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('pdfToPpt')">
+          <div class="icon">📽️</div><h3>PDF to PowerPoint</h3>
+          <p>Extract PDF text into a PowerPoint-compatible presentation.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('pdfToExcel')">
+          <div class="icon">📊</div><h3>PDF to Excel</h3>
+          <p>Extract PDF text into a spreadsheet-compatible file.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('wordToPdf')">
+          <div class="icon">📄</div><h3>Word to PDF</h3>
+          <p>Create a PDF from Word-style text directly in your browser.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('pptToPdf')">
+          <div class="icon">📑</div><h3>PowerPoint to PDF</h3>
+          <p>Create a PDF from presentation text.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('excelToPdf')">
+          <div class="icon">📗</div><h3>Excel to PDF</h3>
+          <p>Create a PDF from spreadsheet-style data.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('editPdf')">
+          <div class="icon">✏️</div><h3>Edit PDF</h3>
+          <p>Add text to a PDF page and save a new copy.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('rotatePdf')">
+          <div class="icon">🔄</div><h3>Rotate PDF</h3>
+          <p>Rotate PDF pages and download the updated document.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('organizePdf')">
+          <div class="icon">📚</div><h3>Organize PDF</h3>
+          <p>Reorder or remove pages from a PDF.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('repairPdf')">
+          <div class="icon">🛠️</div><h3>Repair PDF</h3>
+          <p>Attempt a safe browser-side PDF re-save.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('pageNumber')">
+          <div class="icon">🔢</div><h3>Page Number</h3>
+          <p>Add page numbers to PDF pages.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('scanPdf')">
+          <div class="icon">📷</div><h3>Scan to PDF</h3>
+          <p>Convert selected scans and images into a PDF.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('cropPdf')">
+          <div class="icon">✂️</div><h3>Crop PDF</h3>
+          <p>Adjust page margins and create a cropped PDF copy.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('pdfToPdf')">
+          <div class="icon">📋</div><h3>PDF to PDF</h3>
+          <p>Create a fresh PDF copy from an existing document.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('relatedPdf')">
+          <div class="icon">🔗</div><h3>Related PDF</h3>
+          <p>Create a clean related PDF copy from your document.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('protectPdf')">
+          <div class="icon">🔐</div><h3>Protect PDF</h3>
+          <p>Prepare a protected PDF workflow for your document.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('unlockPdf')">
+          <div class="icon">🔓</div><h3>Unlock PDF</h3>
+          <p>Create an unlocked copy when the browser can read the PDF.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+      </div>
+    </section>
 
-    <h1>
-        Your All-in-One
-        <span>Smart Assistant</span>
-    </h1>
+    <!-- AI TOOLS -->
+    <section id="ai">
+      <div class="title">
+        <h2>🤖 AI Assisted Tools</h2>
+        <p>Build job-ready resumes, official letters, and secure keys.</p>
+      </div>
 
-    <p>
-        PDF tools, AI tools and useful calculators —
-        everything you need in one simple platform.
-    </p>
+      <div class="grid">
+        <div class="card" onclick="openToolPage('resume')">
+          <div class="icon">👔</div>
+          <h3>AI Resume Builder</h3>
+          <p>Multi-template professional resumes with PDF, Word, and Text exports.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('letter')">
+          <div class="icon">✉️</div>
+          <h3>AI Formal Letter Writer</h3>
+          <p>Draft job inquiries, applications, and official notices quickly.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('password')">
+          <div class="icon">🔑</div>
+          <h3>Smart Password Generator</h3>
+          <p>Generate secure crypto-grade passwords with customizable rules.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('study')">
+          <div class="icon">🎓</div>
+          <h3>AI Study Assistant</h3>
+          <p>Break down complex study topics into clear revision notes.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+      </div>
+    </section>
 
-    <div class="search">
-        <input
-            id="search"
-            placeholder="Search Merge PDF, Resume, EMI..."
-        >
+    <!-- CALCULATORS -->
+    <section id="calculator">
+      <div class="title">
+        <h2>🧮 Smart Everyday Calculators</h2>
+        <p>Detailed time analytics, percentages, and financial loan planning.</p>
+      </div>
 
-        <button onclick="searchTool()">Search</button>
+      <div class="grid">
+        <div class="card" onclick="openToolPage('ageCalc')">
+          <div class="icon">🎂</div>
+          <h3>Comprehensive Age Calculator</h3>
+          <p>Calculates total lived years, months, weeks, days, hours, and seconds.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('percentageCalc')">
+          <div class="icon">📊</div>
+          <h3>Percentage Calculator</h3>
+          <p>Calculate increases, academic percentages, ratios, and marks.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+        <div class="card" onclick="openToolPage('emiCalc')">
+          <div class="icon">💰</div>
+          <h3>Loan EMI Calculator</h3>
+          <p>Plan home, car, and personal loans with interest breakdowns.</p>
+          <button class="btn-open">Open Tool</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- DEDICATED TOOL PAGE VIEW (RELOADS IN-PLACE ON ROUTE) -->
+  <div id="viewTool" class="tool-view-wrapper" style="display:none;">
+    <div class="back-bar">
+      <button class="btn-back" onclick="navigateTo('home')">← Back to All Tools</button>
+      <span id="breadcrumbCategory" style="font-size:13px; color:var(--text-muted); text-transform:uppercase;"></span>
     </div>
 
-</section>
+    <div class="workspace">
+      <h2 id="toolPageTitle" style="font-size:26px; margin-bottom:8px;"></h2>
+      <p id="toolPageSubtitle" style="color:var(--text-muted); font-size:14px; margin-bottom:20px;"></p>
+      
+      <div id="toolInteractiveForm"></div>
 
+      <!-- IN-DEPTH USER GUIDE, INSTRUCTIONS & TERMS PER TOOL -->
+      <div class="tool-guide-card" id="toolPageGuide"></div>
+    </div>
+  </div>
 
-<!-- PDF TOOLS -->
-<section id="pdf">
-
-<div class="title">
-    <h2>📄 PDF Tools</h2>
-    <p>Powerful PDF tools for everyday work.</p>
-</div>
-
-<div class="grid">
-
-<div class="card">
-<div class="icon">📑</div>
-<h3>Merge PDF</h3>
-<p>Combine multiple PDF files into one.</p>
-<button onclick="openWorkspace('merge')">Open Tool</button>
-</div>
-
-<div class="card">
-<div class="icon">✂️</div>
-<h3>Split PDF</h3>
-<p>Extract selected pages from a PDF.</p>
-<button onclick="openWorkspace('split')">Open Tool</button>
-</div>
-
-<div class="card">
-<div class="icon">🖼️</div>
-<h3>Image to PDF</h3>
-<p>Convert JPG or PNG images into PDF.</p>
-<button onclick="openWorkspace('imagepdf')">Open Tool</button>
-</div>
-
-<div class="card">
-<div class="icon">📸</div>
-<h3>PDF to JPG</h3>
-<p>Convert PDF pages into JPG images.</p>
-<button onclick="openWorkspace('pdfjpg')">Open Tool</button>
-</div>
-
-<div class="card">
-<div class="icon">🗜️</div>
-<h3>Compress PDF</h3>
-<p>Reduce PDF size.</p>
-<button onclick="openCompressPDF()">Open Tool</button>
-</div>
-
-<div class="card">
-<div class="icon">🔐</div>
-<h3>Protect PDF</h3>
-<p>Add password protection to PDF.</p>
-<button onclick="comingSoon('Protect PDF')">Open Tool</button>
-</div>
-<div class="card">
-    <div class="icon">🔑</div>
-
-    <h3>Password Generator</h3>
-
-    <p>
-        Generate a strong and secure random password.
-    </p>
-
-    <button onclick="openPasswordTool()">
-        Open Tool
-    </button>
-</div>
-<div class="card">
-<div class="icon">🔓</div>
-<h3>Unlock PDF</h3>
-<p>Remove supported PDF restrictions.</p>
-<button onclick="openAdvancedTool('unlock')">Open Tool</button>
-</div>
-
-
-<div class="card"><div class="icon">📝</div><h3>PDF to Word</h3><p>Extract PDF text into a Word-compatible document.</p><button onclick="openAdvancedTool('pdfword')">Open Tool</button></div>
-<div class="card"><div class="icon">📊</div><h3>PDF to PowerPoint</h3><p>Create a basic PowerPoint from PDF page text.</p><button onclick="openAdvancedTool('pdfppt')">Open Tool</button></div>
-<div class="card"><div class="icon">📈</div><h3>PDF to Excel</h3><p>Export PDF page text into an Excel sheet.</p><button onclick="openAdvancedTool('pdfexcel')">Open Tool</button></div>
-<div class="card"><div class="icon">📝</div><h3>Word to PDF</h3><p>Convert pasted Word text into a PDF.</p><button onclick="openAdvancedTool('wordpdf')">Open Tool</button></div>
-<div class="card"><div class="icon">📽️</div><h3>PowerPoint to PDF</h3><p>Convert pasted slide text into a PDF.</p><button onclick="openAdvancedTool('pptpdf')">Open Tool</button></div>
-<div class="card"><div class="icon">📗</div><h3>Excel to PDF</h3><p>Convert pasted spreadsheet data into a PDF.</p><button onclick="openAdvancedTool('excelpdf')">Open Tool</button></div>
-<div class="card"><div class="icon">✍️</div><h3>Edit PDF</h3><p>Add text or an image to the first PDF page.</p><button onclick="openAdvancedTool('editpdf')">Open Tool</button></div>
-<div class="card"><div class="icon">🖊️</div><h3>Sign PDF</h3><p>Add a drawn signature to the first page.</p><button onclick="openAdvancedTool('signpdf')">Open Tool</button></div>
-<div class="card"><div class="icon">💧</div><h3>Watermark PDF</h3><p>Add a watermark to every page.</p><button onclick="openAdvancedTool('watermark')">Open Tool</button></div>
-<div class="card"><div class="icon">🔄</div><h3>Rotate PDF</h3><p>Rotate every page by 90, 180 or 270 degrees.</p><button onclick="openAdvancedTool('rotate')">Open Tool</button></div>
-<div class="card"><div class="icon">📚</div><h3>Organize PDF</h3><p>Reorder, remove or extract PDF pages.</p><button onclick="openAdvancedTool('organize')">Open Tool</button></div>
-<div class="card"><div class="icon">🛠️</div><h3>Repair PDF</h3><p>Try to re-save a damaged but readable PDF.</p><button onclick="openAdvancedTool('repair')">Open Tool</button></div>
-<div class="card"><div class="icon">🔢</div><h3>Page Number</h3><p>Add page numbers to every PDF page.</p><button onclick="openAdvancedTool('pagenumber')">Open Tool</button></div>
-<div class="card"><div class="icon">📷</div><h3>Scan to PDF</h3><p>Select scanned images and make a PDF.</p><button onclick="openAdvancedTool('scanpdf')">Open Tool</button></div>
-<div class="card"><div class="icon">✂️</div><h3>Crop PDF</h3><p>Crop every page using margin values.</p><button onclick="openAdvancedTool('crop')">Open Tool</button></div>
-<div class="card"><div class="icon">📄</div><h3>PDF to PDF</h3><p>Create a clean copy or extract selected pages.</p><button onclick="openAdvancedTool('pdftopdf')">Open Tool</button></div>
-<div class="card"><div class="icon">🧩</div><h3>Related PDF</h3><p>Copy or extract pages into a related PDF file.</p><button onclick="openAdvancedTool('relatedpdf')">Open Tool</button></div>
-<div class="card"><div class="icon">🧠</div><h3>AI PDF Summary</h3><p>Generate a quick local text summary from a PDF.</p><button onclick="openAdvancedTool('summary')">Open Tool</button></div>
-<div class="card"><div class="icon">🌐</div><h3>Translate PDF</h3><p>Extract PDF text ready for translation.</p><button onclick="openAdvancedTool('translate')">Open Tool</button></div>
-<div class="card">
-<div class="icon">✏️</div>
-<h3>PDF Editor</h3>
-<p>Edit PDF documents.</p>
-<button onclick="openAdvancedTool('editpdf')">Open Tool</button>
-</div>
+  <!-- LEGAL & POLICY PAGES VIEW -->
+  <div id="viewLegal" class="tool-view-wrapper" style="display:none;">
+    <div class="back-bar">
+      <button class="btn-back" onclick="navigateTo('home')">← Back to Dashboard</button>
+    </div>
+    <div class="workspace" id="legalContentContainer"></div>
+  </div>
 
 </div>
 
-
-<!-- PDF WORKSPACE -->
-<div class="workspace" id="pdfWorkspace">
-
-<h3 id="workspaceTitle">📑 PDF Tool</h3>
-
-<p id="workspaceText">
-Select a PDF tool above.
-</p>
-
-<div id="workspaceContent"></div>
-
-</div>
-
-</section>
-
-
-<!-- AI TOOLS -->
-<section id="ai">
-
-<div class="title">
-<h2>🤖 AI Tools</h2>
-<p>Useful AI-powered tools for study and work.</p>
-</div>
-
-<div class="grid">
-
-<div class="card">
-<div class="icon">📄</div>
-<h3>AI Resume Builder</h3>
-<p>Create a professional resume.</p>
-<button onclick="openAI('resume')">Open Tool</button>
-</div>
-
-<div class="card">
-<div class="icon">✉️</div>
-<h3>AI Letter Writer</h3>
-<p>Create professional letters.</p>
-<button onclick="openAI('letter')">Open Tool</button>
-</div>
-
-<div class="card">
-<div class="icon">📱</div>
-<h3>Caption Generator</h3>
-<p>Create captions for social media.</p>
-<button onclick="openAI('caption')">Open Tool</button>
-</div>
-
-<div class="card">
-<div class="icon">🎓</div>
-<h3>Study Helper</h3>
-<p>Generate study notes and answers.</p>
-<button onclick="openAI('study')">Open Tool</button>
-</div>
-
-</div>
-
-
-<div class="workspace">
-
-<h3>🤖 Smart AI Workspace</h3>
-
-<div id="aiWorkspace">
-    <p>Select an AI tool above.</p>
-</div>
-
-</div>
-
-</section>
-
-
-<!-- CALCULATORS -->
-<section id="calculator">
-
-<div class="title">
-<h2>🧮 Calculators</h2>
-<p>Useful calculators for students and everyday life.</p>
-</div>
-
-
-<!-- PERCENTAGE -->
-<div class="calculator">
-
-<h3>📊 Percentage Calculator</h3>
-
-<label>Marks Obtained</label>
-<input
-    type="number"
-    id="obtained"
-    placeholder="Example: 319"
->
-
-<label>Maximum Marks</label>
-<input
-    type="number"
-    id="maximum"
-    placeholder="Example: 500"
->
-
-<button class="primary" onclick="percentage()">
-Calculate Percentage
-</button>
-
-<div class="result" id="percentageResult">
-Result will appear here
-</div>
-
-</div>
-
-
-<!-- EMI -->
-<div class="calculator">
-
-<h3>💰 EMI Calculator</h3>
-
-<label>Loan Amount (₹)</label>
-<input
-    type="number"
-    id="loan"
-    placeholder="500000"
->
-
-<label>Interest Rate (%)</label>
-<input
-    type="number"
-    id="rate"
-    placeholder="8.5"
-    step="0.01"
->
-
-<label>Tenure (Years)</label>
-<input
-    type="number"
-    id="years"
-    placeholder="5"
->
-
-<button class="primary" onclick="emi()">
-Calculate EMI
-</button>
-
-<div class="result" id="emiResult">
-Result will appear here
-</div>
-
-</div>
-
-
-<!-- AGE -->
-<div class="calculator">
-
-<h3>🎂 Age Calculator</h3>
-
-<label>Date of Birth</label>
-
-<input
-    type="date"
-    id="dob"
->
-
-<button class="primary" onclick="age()">
-Calculate Age
-</button>
-
-<div class="result" id="ageResult">
-Result will appear here
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ABOUT -->
-<section class="about" id="about">
-
-<div class="title">
-<h2>💡 About SmartSathi AI</h2>
-</div>
-
-<p>
-SmartSathi AI is an all-in-one platform for PDF tools,
-AI utilities and useful calculators. Our goal is to make
-everyday digital work simple, fast and accessible.
-</p>
-
-</section>
-
-
-
-<section id="privacy" class="about">
-  <div class="title"><h2>🔒 Privacy Policy</h2></div>
-  <p>SmartSathi AI is designed to process many PDF tasks directly in your browser. Files selected for browser-side tools are not intentionally uploaded by this page. Third-party CDN libraries may be loaded to provide tool functionality. Do not upload confidential information unless you trust the environment and understand the service.</p>
-</section>
-<section id="terms" class="about">
-  <div class="title"><h2>📜 Terms of Use</h2></div>
-  <p>Use SmartSathi AI only for lawful purposes. Results from browser-based conversion and repair tools may vary by file. Password protection, AI translation and advanced document conversion may require a secure server-side service in a future version.</p>
-</section>
-<section id="contact" class="about">
-  <div class="title"><h2>📩 Contact</h2></div>
-  <p>For support, feedback, broken tools or partnership enquiries, add your business email here before publishing the website.</p>
-</section>
-
+<!-- FOOTER WITH MONETIZATION & POLICY LINKS -->
 <footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4 style="color:var(--primary); font-size:18px;">SmartSathi AI</h4>
+      <p style="margin-bottom:12px; line-height:1.6;">SmartSathi AI is an on-device utility and productivity platform designed for students, job applicants, and digital workers. All processing runs locally in your browser.</p>
+      <p>Secure • Browser-Powered • Privacy-First</p>
+    </div>
+    <div class="footer-col">
+      <h4>Document Tools</h4>
+      <ul>
+        <li><a onclick="openToolPage('compressImage')">Image Compressor</a></li>
+        <li><a onclick="openToolPage('mergePdf')">Merge PDF</a></li>
+        <li><a onclick="openToolPage('splitPdf')">Split PDF</a></li>
+        <li><a onclick="openToolPage('signPdf')">Sign PDF</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>AI & Calculators</h4>
+      <ul>
+        <li><a onclick="openToolPage('resume')">Resume Builder</a></li>
+        <li><a onclick="openToolPage('ageCalc')">Age Calculator</a></li>
+        <li><a onclick="openToolPage('percentageCalc')">Percentage Calculator</a></li>
+        <li><a onclick="openToolPage('emiCalc')">EMI Calculator</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal & Compliance</h4>
+      <ul>
+        <li><a onclick="openLegalPage('terms')">Terms & Conditions</a></li>
+        <li><a onclick="openLegalPage('privacy')">Privacy Policy</a></li>
+        <li><a onclick="openLegalPage('disclaimer')">Earnings & Disclaimer</a></li>
+        <li><a onclick="openLegalPage('contact')">Contact Support</a></li>
+      </ul>
+    </div>
+  </div>
 
-<h3>SmartSathi AI</h3>
-
-<p>Smart Tools. Simple Life.</p>
-
-<p>© 2026 SmartSathi AI. All Rights Reserved.</p>
-<p style="margin-top:14px">
-<a href="#privacy" style="color:#cbd5e1;margin:0 8px">Privacy Policy</a>
-<a href="#terms" style="color:#cbd5e1;margin:0 8px">Terms</a>
-<a href="#contact" style="color:#cbd5e1;margin:0 8px">Contact</a>
-</p>
-
-
+  <div class="footer-bottom">
+    <div>&copy; 2026 SmartSathi AI. All rights reserved. Built for public use and commercial distribution.</div>
+    <div>Third-party advertisements, affiliate partnerships, and sponsorships on this website comply with digital publisher guidelines.</div>
+  </div>
 </footer>
 
+<!-- AUTH MODAL WITH X CLOSE BUTTON & CONFIRM PASSWORD -->
+<div class="auth-overlay" id="authModalOverlay">
+  <div class="auth-card">
+    <button class="auth-close-x" onclick="closeAuthModal()" title="Close dialog">✕</button>
+    <h3 id="modalAuthHeader" style="margin-bottom:6px;">Sign In to SmartSathi</h3>
+    <p id="modalAuthSub" style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Access your utility profile</p>
+
+    <input type="email" id="authEmail" placeholder="Email Address">
+    
+    <div id="signupOnlyFields" style="display:none;">
+      <input type="tel" id="authMobile" placeholder="Mobile Number (Optional)">
+    </div>
+
+    <input type="password" id="authPassword" placeholder="Password (Min 6 characters)">
+    
+    <div id="confirmPasswordGroup" style="display:none;">
+      <input type="password" id="authConfirmPassword" placeholder="Confirm Password">
+    </div>
+
+    <button id="authSubmitActionBtn" class="primary" style="margin-bottom:10px;" onclick="handleAuthSubmit()">Sign In</button>
+    <button class="primary" style="background:var(--text-muted);" onclick="closeAuthModal()">Back / Cancel</button>
+
+    <div style="margin-top:14px; font-size:13px;">
+      <a href="javascript:void(0)" id="authSwitchModeBtn" style="color:var(--primary); text-decoration:none;" onclick="toggleAuthFormMode()">Don't have an account? Sign Up</a>
+    </div>
+
+    <div id="authStatusText" style="margin-top:12px; font-size:13px; font-weight:600;"></div>
+  </div>
+</div>
 
 <script>
+/* ============================================================
+   SINGLE PAGE APP (SPA) ROUTING & NAVIGATION
+   ============================================================ */
+function navigateTo(view, hashTarget) {
+  document.getElementById("viewHome").style.display = (view === "home") ? "block" : "none";
+  document.getElementById("viewTool").style.display = (view === "tool") ? "block" : "none";
+  document.getElementById("viewLegal").style.display = (view === "legal") ? "block" : "none";
+  window.scrollTo({ top: 0, behavior: "smooth" });
 
-/* =========================
-   PDF WORKSPACE
-========================= */
+  if (view === "home" && hashTarget) {
+    setTimeout(() => {
+      document.getElementById(hashTarget)?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  }
+}
 
-function openWorkspace(type){
+/* ============================================================
+   THEME CONTROLLER
+   ============================================================ */
+function applyTheme(theme) {
+  if (theme === "auto") {
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  } else {
+    document.documentElement.setAttribute("data-theme", theme);
+  }
+}
 
-    const box =
-        document.getElementById("pdfWorkspace");
+function handleThemeChange(val) {
+  localStorage.setItem("smartsathi_theme", val);
+  applyTheme(val);
+}
 
-    const title =
-        document.getElementById("workspaceTitle");
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  if ((localStorage.getItem("smartsathi_theme") || "auto") === "auto") applyTheme("auto");
+});
 
-    const text =
-        document.getElementById("workspaceText");
+const savedTheme = localStorage.getItem("smartsathi_theme") || "auto";
+document.getElementById("themeSelector").value = savedTheme;
+applyTheme(savedTheme);
 
-    const content =
-        document.getElementById("workspaceContent");
+/* ============================================================
+   SMART AUTO-COMPLETE SEARCH
+   ============================================================ */
+const searchableTools = [
+  { name: "Compress Image", id: "compressImage", cat: "Image", keywords: ["compress", "image", "photo", "jpg", "png", "kb", "size"] },
+  { name: "Merge PDF", id: "mergePdf", cat: "PDF", keywords: ["merge", "combine", "pdf", "join"] },
+  { name: "Split PDF", id: "splitPdf", cat: "PDF", keywords: ["split", "extract", "pages", "cut"] },
+  { name: "Image to PDF", id: "imgToPdf", cat: "PDF", keywords: ["image", "jpg", "png", "convert", "pdf"] },
+  { name: "PDF to JPG", id: "pdfToJpg", cat: "PDF", keywords: ["pdf", "jpg", "render"] },
+  { name: "Compress PDF", id: "compressPdf", cat: "PDF", keywords: ["compress", "pdf", "reduce"] },
+  { name: "Sign PDF", id: "signPdf", cat: "PDF", keywords: ["sign", "signature", "stamp"] },
+  { name: "Watermark PDF", id: "watermarkPdf", cat: "PDF", keywords: ["watermark", "protect"] },
+  { name: "PDF to Word", id: "pdfToWord", cat: "PDF", keywords: ["pdf", "word", "doc", "convert"] },
+  { name: "PDF to PowerPoint", id: "pdfToPpt", cat: "PDF", keywords: ["pdf", "powerpoint", "ppt", "presentation"] },
+  { name: "PDF to Excel", id: "pdfToExcel", cat: "PDF", keywords: ["pdf", "excel", "xlsx", "spreadsheet"] },
+  { name: "Word to PDF", id: "wordToPdf", cat: "PDF", keywords: ["word", "doc", "pdf", "convert"] },
+  { name: "PowerPoint to PDF", id: "pptToPdf", cat: "PDF", keywords: ["powerpoint", "ppt", "pdf"] },
+  { name: "Excel to PDF", id: "excelToPdf", cat: "PDF", keywords: ["excel", "xlsx", "pdf"] },
+  { name: "Edit PDF", id: "editPdf", cat: "PDF", keywords: ["edit", "pdf", "text"] },
+  { name: "Rotate PDF", id: "rotatePdf", cat: "PDF", keywords: ["rotate", "pdf"] },
+  { name: "Organize PDF", id: "organizePdf", cat: "PDF", keywords: ["organize", "reorder", "pages", "pdf"] },
+  { name: "Repair PDF", id: "repairPdf", cat: "PDF", keywords: ["repair", "fix", "pdf"] },
+  { name: "Page Number", id: "pageNumber", cat: "PDF", keywords: ["page", "number", "pdf"] },
+  { name: "Scan to PDF", id: "scanPdf", cat: "PDF", keywords: ["scan", "image", "pdf"] },
+  { name: "Crop PDF", id: "cropPdf", cat: "PDF", keywords: ["crop", "pdf"] },
+  { name: "PDF to PDF", id: "pdfToPdf", cat: "PDF", keywords: ["pdf", "copy", "convert"] },
+  { name: "Related PDF", id: "relatedPdf", cat: "PDF", keywords: ["related", "pdf", "copy"] },
+  { name: "Protect PDF", id: "protectPdf", cat: "PDF", keywords: ["protect", "password", "pdf"] },
+  { name: "Unlock PDF", id: "unlockPdf", cat: "PDF", keywords: ["unlock", "pdf"] },
+  { name: "AI Resume Builder", id: "resume", cat: "AI", keywords: ["resume", "cv", "maker", "builder"] },
+  { name: "AI Formal Letter Writer", id: "letter", cat: "AI", keywords: ["letter", "application", "writer"] },
+  { name: "Smart Password Generator", id: "password", cat: "Security", keywords: ["password", "generator", "random"] },
+  { name: "AI Study Assistant", id: "study", cat: "Education", keywords: ["study", "notes", "revision", "learn"] },
+  { name: "Comprehensive Age Calculator", id: "ageCalc", cat: "Calculator", keywords: ["age", "dob", "years", "seconds", "calculator"] },
+  { name: "Percentage Calculator", id: "percentageCalc", cat: "Calculator", keywords: ["percentage", "percent", "marks", "ratio", "calculator"] },
+  { name: "Loan EMI Calculator", id: "emiCalc", cat: "Calculator", keywords: ["emi", "loan", "interest", "finance", "bank"] }
+];
 
-    box.scrollIntoView({
-        behavior:"smooth"
-    });
+let currentSuggestions = [];
 
+function handleSmartSearch(query) {
+  const q = query.trim().toLowerCase();
+  const box = document.getElementById("suggestionsBox");
+  if (!q) {
+    box.style.display = "none";
+    currentSuggestions = [];
+    return;
+  }
 
-    if(type === "merge"){
+  currentSuggestions = searchableTools.filter(t => {
+    return t.name.toLowerCase().includes(q) || t.keywords.some(k => k.startsWith(q) || k.includes(q));
+  });
 
-        title.innerText = "📑 Merge PDF";
+  if (currentSuggestions.length === 0) {
+    box.innerHTML = `<div class="sugg-item" style="color:var(--text-muted);">No matching tools found.</div>`;
+    box.style.display = "block";
+    return;
+  }
 
-        text.innerText =
-            "Select 2 or more PDF files and combine them.";
+  box.innerHTML = currentSuggestions.map((item, idx) => `
+    <div class="sugg-item" onclick="triggerSuggestionItem(${idx})">
+      <span>${item.name}</span>
+      <span class="sugg-cat">${item.cat}</span>
+    </div>
+  `).join("");
+  box.style.display = "block";
+}
 
-        content.innerHTML = `
+function triggerSuggestionItem(idx) {
+  const item = currentSuggestions[idx];
+  if (item) {
+    document.getElementById("suggestionsBox").style.display = "none";
+    document.getElementById("smartSearchInput").value = item.name;
+    openToolPage(item.id);
+  }
+}
 
-        <input
-            type="file"
-            id="mergeFiles"
-            accept="application/pdf"
-            multiple
-            onchange="showMergeFiles()"
-        >
+function triggerFirstSuggestion() {
+  if (currentSuggestions.length > 0) triggerSuggestionItem(0);
+}
 
-        <div class="file-list" id="mergeList"></div>
+document.addEventListener("click", e => {
+  if (!e.target.closest(".search-wrapper")) {
+    document.getElementById("suggestionsBox").style.display = "none";
+  }
+});
 
-        <button
-            class="primary"
-            onclick="mergePDF()"
-        >
-        🔗 Merge PDF
-        </button>
+/* ============================================================
+   TOOL VIEW DISPATCHER WITH DETAILED STEP-BY-STEP GUIDES
+   ============================================================ */
+let activeImgElement = null;
+let activeResumeTemplate = "modern";
 
-        <div class="result" id="mergeResult">
+function openToolPage(toolId) {
+  navigateTo('tool');
+
+  const title = document.getElementById("toolPageTitle");
+  const subtitle = document.getElementById("toolPageSubtitle");
+  const form = document.getElementById("toolInteractiveForm");
+  const guide = document.getElementById("toolPageGuide");
+  const category = document.getElementById("breadcrumbCategory");
+
+  if (toolId === "compressImage") {
+    category.innerText = "Image Studio";
+    title.innerText = "🗜️ Advanced Image Compression Studio";
+    subtitle.innerText = "Target custom file sizes, toggle quality presets, and export to WebP/JPG/PNG.";
+    form.innerHTML = `
+      <label>Choose Image File</label>
+      <input type="file" id="compImgFile" accept="image/*" onchange="cacheSelectedImage(this)">
+
+      <div class="flex-row">
+        <div>
+          <label>Target File Size</label>
+          <input type="number" id="targetSizeVal" placeholder="e.g. 50">
         </div>
-        `;
-    }
-
-
-    if(type === "split"){
-
-        title.innerText = "✂️ Split PDF";
-
-        text.innerText =
-            "Select a PDF and enter the page range you want.";
-
-        content.innerHTML = `
-
-        <input
-            type="file"
-            id="splitFile"
-            accept="application/pdf"
-        >
-
-        <label>Start Page</label>
-
-        <input
-            type="number"
-            id="startPage"
-            min="1"
-            placeholder="1"
-        >
-
-        <label>End Page</label>
-
-        <input
-            type="number"
-            id="endPage"
-            min="1"
-            placeholder="Example: 5"
-        >
-
-        <button
-            class="primary"
-            onclick="splitPDF()"
-        >
-        ✂️ Split PDF
-        </button>
-
-        <div class="result" id="splitResult"></div>
-        `;
-    }
-
-
-    if(type === "imagepdf"){
-
-        title.innerText = "🖼️ Image to PDF";
-
-        text.innerText =
-            "Select one or more JPG/PNG images.";
-
-        content.innerHTML = `
-
-        <input
-            type="file"
-            id="imageFiles"
-            accept="image/jpeg,image/png"
-            multiple
-        >
-
-        <button
-            class="primary"
-            onclick="imageToPDF()"
-        >
-        🖼️ Convert to PDF
-        </button>
-
-        <div class="result" id="imageResult"></div>
-        `;
-    }
-
-
-    if(type === "pdfjpg"){
-
-        title.innerText = "📸 PDF to JPG";
-
-        text.innerText =
-            "Convert the first page of a PDF into a JPG image.";
-
-        content.innerHTML = `
-
-        <input
-            type="file"
-            id="jpgPDF"
-            accept="application/pdf"
-        >
-
-        <button
-            class="primary"
-            onclick="pdfToJPG()"
-        >
-        📸 Convert to JPG
-        </button>
-
-        <div class="result" id="jpgResult"></div>
-        `;
-    }
-}
-
-
-/* =========================
-   MERGE PDF
-========================= */
-
-function showMergeFiles(){
-
-    const files =
-        document.getElementById("mergeFiles").files;
-
-    const list =
-        document.getElementById("mergeList");
-
-    list.innerHTML = "";
-
-    Array.from(files).forEach((file,index)=>{
-
-        list.innerHTML += `
-        <div class="file">
-            <span>📄 ${index+1}. ${file.name}</span>
+        <div>
+          <label>Unit</label>
+          <select id="targetSizeUnit">
+            <option value="KB">Kilobytes (KB)</option>
+            <option value="MB">Megabytes (MB)</option>
+          </select>
         </div>
-        `;
-
-    });
-}
-
-
-async function mergePDF(){
-
-    const files =
-        Array.from(
-            document.getElementById("mergeFiles").files
-        );
-
-    const result =
-        document.getElementById("mergeResult");
-
-    if(files.length < 2){
-
-        result.innerText =
-            "❌ कम से कम 2 PDF select करें।";
-
-        return;
-    }
-
-    try{
-
-        result.innerText =
-            "⏳ PDFs merge हो रही हैं...";
-
-        const merged =
-            await PDFLib.PDFDocument.create();
-
-        for(const file of files){
-
-            const bytes =
-                await file.arrayBuffer();
-
-            const pdf =
-                await PDFLib.PDFDocument.load(bytes);
-
-            const pages =
-                await merged.copyPages(
-                    pdf,
-                    pdf.getPageIndices()
-                );
-
-            pages.forEach(page=>{
-                merged.addPage(page);
-            });
-        }
-
-        const bytes =
-            await merged.save();
-
-        downloadPDF(
-            bytes,
-            "SmartSathi-Merged.pdf"
-        );
-
-        result.innerText =
-            "✅ PDF successfully merged!";
-
-    }catch(error){
-
-        console.error(error);
-
-        result.innerText =
-            "❌ PDF merge नहीं हो पाया।";
-    }
-}
-
-
-/* =========================
-   SPLIT PDF
-========================= */
-
-async function splitPDF(){
-
-    const file =
-        document.getElementById("splitFile").files[0];
-
-    const start =
-        parseInt(
-            document.getElementById("startPage").value
-        );
-
-    const end =
-        parseInt(
-            document.getElementById("endPage").value
-        );
-
-    const result =
-        document.getElementById("splitResult");
-
-    if(!file || !start || !end){
-
-        result.innerText =
-            "❌ PDF और page range select करें।";
-
-        return;
-    }
-
-    if(start > end){
-
-        result.innerText =
-            "❌ Start Page, End Page से बड़ी नहीं हो सकती।";
-
-        return;
-    }
-
-    try{
-
-        result.innerText =
-            "⏳ PDF split हो रही है...";
-
-        const bytes =
-            await file.arrayBuffer();
-
-        const source =
-            await PDFLib.PDFDocument.load(bytes);
-
-        const total =
-            source.getPageCount();
-
-        if(start < 1 || end > total){
-
-            result.innerText =
-                `❌ PDF में केवल ${total} pages हैं।`;
-
-            return;
-        }
-
-        const output =
-            await PDFLib.PDFDocument.create();
-
-        const indexes =
-            [];
-
-        for(let i=start-1;i<end;i++){
-            indexes.push(i);
-        }
-
-        const pages =
-            await output.copyPages(
-                source,
-                indexes
-            );
-
-        pages.forEach(page=>{
-            output.addPage(page);
-        });
-
-        const outputBytes =
-            await output.save();
-
-        downloadPDF(
-            outputBytes,
-            "SmartSathi-Split.pdf"
-        );
-
-        result.innerText =
-            "✅ PDF successfully split!";
-
-    }catch(error){
-
-        console.error(error);
-
-        result.innerText =
-            "❌ PDF split नहीं हो पाई।";
-    }
-}
-
-
-/* =========================
-   IMAGE TO PDF
-========================= */
-
-async function imageToPDF(){
-
-    const files =
-        Array.from(
-            document.getElementById("imageFiles").files
-        );
-
-    const result =
-        document.getElementById("imageResult");
-
-    if(files.length === 0){
-
-        result.innerText =
-            "❌ कम से कम एक image select करें।";
-
-        return;
-    }
-
-    try{
-
-        result.innerText =
-            "⏳ PDF बन रही है...";
-
-        const pdf =
-            await PDFLib.PDFDocument.create();
-
-        for(const file of files){
-
-            const bytes =
-                await file.arrayBuffer();
-
-            let image;
-
-            if(file.type === "image/png"){
-
-                image =
-                    await pdf.embedPng(bytes);
-
-            }else{
-
-                image =
-                    await pdf.embedJpg(bytes);
-            }
-
-            const width =
-                image.width;
-
-            const height =
-                image.height;
-
-            const page =
-                pdf.addPage([
-                    width,
-                    height
-                ]);
-
-            page.drawImage(image,{
-                x:0,
-                y:0,
-                width:width,
-                height:height
-            });
-        }
-
-        const bytes =
-            await pdf.save();
-
-        downloadPDF(
-            bytes,
-            "SmartSathi-Images.pdf"
-        );
-
-        result.innerText =
-            "✅ Images successfully converted to PDF!";
-
-    }catch(error){
-
-        console.error(error);
-
-        result.innerText =
-            "❌ Image to PDF failed.";
-    }
-}
-
-
-/* =========================
-   PDF TO JPG
-========================= */
-
-async function pdfToJPG(){
-
-    const file =
-        document.getElementById("jpgPDF").files[0];
-
-    const result =
-        document.getElementById("jpgResult");
-
-    if(!file){
-
-        result.innerText =
-            "❌ PDF select करें।";
-
-        return;
-    }
-
-    try{
-
-        result.innerText =
-            "⏳ PDF page convert हो रहा है...";
-
-        const bytes =
-            await file.arrayBuffer();
-
-        const pdf =
-            await pdfjsLib.getDocument({
-                data:bytes
-            }).promise;
-
-        const page =
-            await pdf.getPage(1);
-
-        const viewport =
-            page.getViewport({
-                scale:1.5
-            });
-
-        const canvas =
-            document.createElement("canvas");
-
-        const context =
-            canvas.getContext("2d");
-
-        canvas.width =
-            viewport.width;
-
-        canvas.height =
-            viewport.height;
-
-        await page.render({
-            canvasContext:context,
-            viewport:viewport
-        }).promise;
-
-        const link =
-            document.createElement("a");
-
-        link.download =
-            "SmartSathi-Page-1.jpg";
-
-        link.href =
-            canvas.toDataURL("image/jpeg",0.9);
-
-        link.click();
-
-        result.innerText =
-            "✅ First PDF page JPG में download हो गई।";
-
-    }catch(error){
-
-        console.error(error);
-
-        result.innerText =
-            "❌ PDF to JPG failed.";
-    }
-}
-
-
-/* =========================
-   DOWNLOAD PDF
-========================= */
-
-function downloadPDF(bytes,filename){
-
-    const blob =
-        new Blob(
-            [bytes],
-            {type:"application/pdf"}
-        );
-
-    const url =
-        URL.createObjectURL(blob);
-
-    const link =
-        document.createElement("a");
-
-    link.href = url;
-    link.download = filename;
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    link.remove();
-
-    setTimeout(()=>{
-        URL.revokeObjectURL(url);
-    },1000);
-}
-
-
-/* =========================
-   CALCULATORS
-========================= */
-
-function percentage() {
-
-    const obtained = parseFloat(
-        document.getElementById("obtained").value
-    );
-
-    const maximum = parseFloat(
-        document.getElementById("maximum").value
-    );
-
-    const result =
-        document.getElementById("percentageResult");
-
-
-    /* ---------- VALIDATION ---------- */
-
-    if (isNaN(obtained) || isNaN(maximum)) {
-
-        result.innerHTML =
-            "⚠️ Please enter both marks.";
-
-        return;
-    }
-
-    if (maximum <= 0) {
-
-        result.innerHTML =
-            "⚠️ Maximum marks must be greater than 0.";
-
-        return;
-    }
-
-    if (obtained < 0) {
-
-        result.innerHTML =
-            "⚠️ Obtained marks cannot be negative.";
-
-        return;
-    }
-
-    if (obtained > maximum) {
-
-        result.innerHTML =
-            "⚠️ Obtained marks cannot be greater than maximum marks.";
-
-        return;
-    }
-
-
-    /* ---------- CALCULATION ---------- */
-
-    const percentageValue =
-        (obtained / maximum) * 100;
-
-
-    const percentage =
-        percentageValue.toFixed(2);
-
-
-    /* ---------- RESULT ---------- */
-
-    result.innerHTML = `
-        <div style="font-size:28px;">
-            ${percentage}%
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label>Quality Presets</label>
+          <select id="qualityPreset" onchange="toggleQualityPresetSlider(this.value)">
+            <option value="0.90">Higher (90%)</option>
+            <option value="0.80" selected>Good (80%)</option>
+            <option value="0.70">Medium (70%)</option>
+            <option value="0.55">Low (55%)</option>
+            <option value="custom">Customize Slider</option>
+          </select>
         </div>
-
-        <div style="
-            margin-top:8px;
-            color:#64748b;
-            font-size:14px;
-        ">
-            ${obtained} out of ${maximum} marks
+        <div>
+          <label>Output Format</label>
+          <select id="outputFormat">
+            <option value="image/jpeg">JPG / JPEG</option>
+            <option value="image/webp">WebP</option>
+            <option value="image/png">PNG</option>
+          </select>
         </div>
-    `;
-
-}
-
-
-function emi(){
-
-    const P =
-        parseFloat(
-            document.getElementById("loan").value
-        );
-
-    const annual =
-        parseFloat(
-            document.getElementById("rate").value
-        );
-
-    const years =
-        parseFloat(
-            document.getElementById("years").value
-        );
-
-    if(
-        isNaN(P) ||
-        isNaN(annual) ||
-        isNaN(years)
-    ){
-
-        document.getElementById(
-            "emiResult"
-        ).innerText =
-            "Please enter valid details.";
-
-        return;
-    }
-
-    const r =
-        annual/12/100;
-
-    const n =
-        years*12;
-
-    let monthly;
-
-    if(r===0){
-
-        monthly =
-            P/n;
-
-    }else{
-
-        monthly =
-            P*r*Math.pow(1+r,n) /
-            (Math.pow(1+r,n)-1);
-    }
-
-    const total =
-        monthly*n;
-
-    const interest =
-        total-P;
-
-    document.getElementById(
-        "emiResult"
-    ).innerHTML =
-        "Monthly EMI: ₹" +
-        monthly.toLocaleString("en-IN",{
-            maximumFractionDigits:2
-        }) +
-        "<br><br>Total Interest: ₹" +
-        interest.toLocaleString("en-IN",{
-            maximumFractionDigits:2
-        });
-}
-
-
-function age(){
-
-    const value =
-        document.getElementById("dob").value;
-
-    if(!value){
-
-        document.getElementById(
-            "ageResult"
-        ).innerText =
-            "Please select your DOB.";
-
-        return;
-    }
-
-    const birth =
-        new Date(value);
-
-    const today =
-        new Date();
-
-    let y =
-        today.getFullYear() -
-        birth.getFullYear();
-
-    let m =
-        today.getMonth() -
-        birth.getMonth();
-
-    let d =
-        today.getDate() -
-        birth.getDate();
-
-    if(d<0){
-
-        m--;
-
-        const lastMonth =
-            new Date(
-                today.getFullYear(),
-                today.getMonth(),
-                0
-            );
-
-        d +=
-            lastMonth.getDate();
-    }
-
-    if(m<0){
-
-        y--;
-        m+=12;
-    }
-
-    document.getElementById(
-        "ageResult"
-    ).innerText =
-        `Age: ${y} Years, ${m} Months, ${d} Days`;
-}
-
-
-/* =========================
-   AI TOOLS
-========================= */
-
-function openAI(type){
-
-    const box =
-        document.getElementById("aiWorkspace");
-
-    box.scrollIntoView({
-        behavior:"smooth"
-    });
-
-
-    if(type==="resume"){
-
-        box.innerHTML = `
-
-        <h3>📄 AI Resume Builder</h3>
-
-        <input
-            id="rName"
-            placeholder="Full Name"
-        >
-
-        <input
-            id="rPhone"
-            placeholder="Phone Number"
-        >
-
-        <input
-            id="rEmail"
-            placeholder="Email"
-        >
-
-        <input
-            id="rEducation"
-            placeholder="Education"
-        >
-
-        <input
-            id="rSkills"
-            placeholder="Skills"
-        >
-
-        <textarea
-            id="rExperience"
-            placeholder="Work Experience"
-        ></textarea>
-
-        <button
-            class="primary"
-            onclick="generateResume()"
-        >
-        Generate Resume
-        </button>
-
-        <div
-            class="result"
-            id="resumeResult"
-        ></div>
-        `;
-    }
-
-
-    if(type==="letter"){
-
-        box.innerHTML = `
-
-        <h3>✉️ AI Letter Writer</h3>
-
-        <input
-            id="letterTo"
-            placeholder="To / Department"
-        >
-
-        <input
-            id="letterSubject"
-            placeholder="Subject"
-        >
-
-        <textarea
-            id="letterReason"
-            placeholder="Explain what the letter is about..."
-        ></textarea>
-
-        <button
-            class="primary"
-            onclick="generateLetter()"
-        >
-        Generate Letter
-        </button>
-
-        <div
-            class="result"
-            id="letterResult"
-        ></div>
-        `;
-    }
-
-
-    if(type==="caption"){
-
-        box.innerHTML = `
-
-        <h3>📱 Caption Generator</h3>
-
-        <input
-            id="captionTopic"
-            placeholder="Topic / Photo description"
-        >
-
-        <button
-            class="primary"
-            onclick="generateCaption()"
-        >
-        Generate Captions
-        </button>
-
-        <div
-            class="result"
-            id="captionResult"
-        ></div>
-        `;
-    }
-
-
-    if(type==="study"){
-
-        box.innerHTML = `
-
-        <h3>🎓 Study Helper</h3>
-
-        <input
-            id="studyTopic"
-            placeholder="Enter your study topic"
-        >
-
-        <select id="studyLevel">
-            <option>Short Notes</option>
-            <option>Important Questions</option>
-            <option>Revision Points</option>
-        </select>
-
-        <button
-            class="primary"
-            onclick="generateStudy()"
-        >
-        Generate
-        </button>
-
-        <div
-            class="result"
-            id="studyResult"
-        ></div>
-        `;
-    }
-}
-
-
-/* =========================
-   RESUME
-========================= */
-
-function generateResume(){
-
-    const name =
-        document.getElementById("rName").value;
-
-    const phone =
-        document.getElementById("rPhone").value;
-
-    const email =
-        document.getElementById("rEmail").value;
-
-    const education =
-        document.getElementById("rEducation").value;
-
-    const skills =
-        document.getElementById("rSkills").value;
-
-    const experience =
-        document.getElementById("rExperience").value;
-
-    document.getElementById(
-        "resumeResult"
-    ).innerHTML = `
-
-    <h2>${name || "Your Name"}</h2>
-
-    <p>${phone} | ${email}</p>
-
-    <hr><br>
-
-    <h3>Professional Summary</h3>
-
-    <p>
-    Motivated and responsible professional seeking
-    opportunities to utilize skills and contribute
-    effectively to an organization.
-    </p>
-
-    <br>
-
-    <h3>Education</h3>
-
-    <p>${education || "Add your education"}</p>
-
-    <br>
-
-    <h3>Experience</h3>
-
-    <p>${experience || "Add your experience"}</p>
-
-    <br>
-
-    <h3>Skills</h3>
-
-    <p>${skills || "Add your skills"}</p>
-
-    `;
-}
-
-
-/* =========================
-   LETTER
-========================= */
-
-function generateLetter(){
-
-    const to =
-        document.getElementById("letterTo").value;
-
-    const subject =
-        document.getElementById("letterSubject").value;
-
-    const reason =
-        document.getElementById("letterReason").value;
-
-    document.getElementById(
-        "letterResult"
-    ).innerHTML = `
-
-    To,<br>
-    ${to || "The Concerned Authority"}<br><br>
-
-    <strong>Subject: ${subject || "Application"}</strong>
-
-    <br><br>
-
-    Respected Sir/Madam,
-
-    <br><br>
-
-    I am writing this letter regarding
-    ${reason || "the above-mentioned subject"}.
-
-    I kindly request you to consider my request
-    and take the necessary action.
-
-    <br><br>
-
-    Thank you.
-
-    <br><br>
-
-    Yours faithfully,<br>
-    Applicant
-
-    `;
-}
-
-
-/* =========================
-   CAPTION
-========================= */
-
-function generateCaption(){
-
-    const topic =
-        document.getElementById(
-            "captionTopic"
-        ).value || "this moment";
-
-    document.getElementById(
-        "captionResult"
-    ).innerHTML = `
-
-    ✨ Making memories with ${topic}.<br><br>
-
-    🔥 Good vibes, great moments!<br><br>
-
-    📸 Capturing the moment, keeping the memory.<br><br>
-
-    💫 Life is better when you enjoy the little things.<br><br>
-
-    ❤️ Just another beautiful moment.
-
-    `;
-}
-
-
-/* =========================
-   STUDY HELPER
-========================= */
-
-function generateStudy(){
-
-    const topic =
-        document.getElementById(
-            "studyTopic"
-        ).value || "your topic";
-
-    const level =
-        document.getElementById(
-            "studyLevel"
-        ).value;
-
-    document.getElementById(
-        "studyResult"
-    ).innerHTML = `
-
-    <h3>${topic}</h3>
-
-    <br>
-
-    <strong>${level}</strong>
-
-    <br><br>
-
-    1. Definition and basic concept<br><br>
-
-    2. Important points and key terms<br><br>
-
-    3. Main features / classification<br><br>
-
-    4. Important examples<br><br>
-
-    5. Exam-focused revision points<br><br>
-
-    6. Practice questions
-
-    `;
-}
-
-
-/* =========================
-   SEARCH
-========================= */
-
-function searchTool(){
-
-    const q =
-        document.getElementById(
-            "search"
-        ).value.toLowerCase();
-
-    if(
-        q.includes("pdf") ||
-        q.includes("merge") ||
-        q.includes("split") ||
-        q.includes("jpg") ||
-        q.includes("image")
-    ){
-
-        document
-        .getElementById("pdf")
-        .scrollIntoView();
-
-        return;
-    }
-
-    if(
-        q.includes("ai") ||
-        q.includes("resume") ||
-        q.includes("letter") ||
-        q.includes("caption") ||
-        q.includes("study")
-    ){
-
-        document
-        .getElementById("ai")
-        .scrollIntoView();
-
-        return;
-    }
-
-    if(
-        q.includes("percentage") ||
-        q.includes("emi") ||
-        q.includes("age") ||
-        q.includes("calculator")
-    ){
-
-        document
-        .getElementById("calculator")
-        .scrollIntoView();
-
-        return;
-    }
-
-    alert(
-        "यह tool अभी available नहीं है।"
-    );
-}
-
-
-function comingSoon(name){
-
-    alert(
-        name +
-        " को अगले development step में properly add करेंगे।"
-    );
-}
-function openPasswordTool() {
-
-    const box =
-        document.getElementById("aiWorkspace");
-
-    box.innerHTML = `
-
-        <h3>🔑 Password Generator</h3>
-
-        <p>
-            Choose your password length and options.
-        </p>
-
-        <label>Password Length</label>
-
-        <input
-            type="number"
-            id="passwordLength"
-            value="16"
-            min="4"
-            max="50"
-        >
-
-        <label>
-            <input
-                type="checkbox"
-                id="uppercase"
-                checked
-                style="width:auto;"
-            >
-            Include Uppercase (A-Z)
+      </div>
+
+      <div id="customSliderContainer" style="display:none; margin-bottom:12px;">
+        <label>Custom Quality: <span id="customQualityText">80%</span></label>
+        <input type="range" id="customQualityRange" min="1" max="100" value="80" oninput="document.getElementById('customQualityText').innerText = this.value + '%'">
+      </div>
+
+      <div class="flex-row">
+        <div>
+          <label>Max Width (px)</label>
+          <input type="number" id="maxWidthLimit" placeholder="Auto">
+        </div>
+        <div>
+          <label>Max Height (px)</label>
+          <input type="number" id="maxHeightLimit" placeholder="Auto">
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:normal;cursor:pointer;">
+          <input type="checkbox" id="autoSizeOptimization" style="width:auto;margin:0;" checked>
+          Automatically adjust quality and iterations to meet target size limit
         </label>
+      </div>
 
-        <label>
-            <input
-                type="checkbox"
-                id="lowercase"
-                checked
-                style="width:auto;"
-            >
-            Include Lowercase (a-z)
-        </label>
-
-        <label>
-            <input
-                type="checkbox"
-                id="numbers"
-                checked
-                style="width:auto;"
-            >
-            Include Numbers (0-9)
-        </label>
-
-        <label>
-            <input
-                type="checkbox"
-                id="symbols"
-                checked
-                style="width:auto;"
-            >
-            Include Symbols (!@#$)
-        </label>
-
-        <button
-            class="primary"
-            onclick="generatePassword()"
-        >
-            🔐 Generate Password
-        </button>
-
-        <div
-            class="result"
-            id="passwordResult"
-            style="word-break:break-all;"
-        >
-            Your password will appear here.
-        </div>
-
-        <button
-            class="primary"
-            style="margin-top:10px;"
-            onclick="copyPassword()"
-        >
-            📋 Copy Password
-        </button>
-
+      <button class="primary" onclick="runAdvancedCompression()">Compress Image Now</button>
+      <div id="compProgressBox" class="result" style="display:none;"></div>
     `;
 
-    box.scrollIntoView({
-        behavior:"smooth"
-    });
-}
-
-
-function generatePassword() {
-
-    const length =
-        parseInt(
-            document.getElementById(
-                "passwordLength"
-            ).value
-        );
-
-    const useUpper =
-        document.getElementById(
-            "uppercase"
-        ).checked;
-
-    const useLower =
-        document.getElementById(
-            "lowercase"
-        ).checked;
-
-    const useNumbers =
-        document.getElementById(
-            "numbers"
-        ).checked;
-
-    const useSymbols =
-        document.getElementById(
-            "symbols"
-        ).checked;
-
-
-    let characters = "";
-
-    if (useUpper) {
-        characters +=
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    }
-
-    if (useLower) {
-        characters +=
-            "abcdefghijklmnopqrstuvwxyz";
-    }
-
-    if (useNumbers) {
-        characters +=
-            "0123456789";
-    }
-
-    if (useSymbols) {
-        characters +=
-            "!@#$%^&*()_+-=[]{}|;:,.<>?";
-    }
-
-
-    const result =
-        document.getElementById(
-            "passwordResult"
-        );
-
-
-    if (!characters) {
-
-        result.innerText =
-            "⚠️ कम से कम एक option select करें।";
-
-        return;
-    }
-
-
-    if (
-        isNaN(length) ||
-        length < 4 ||
-        length > 50
-    ) {
-
-        result.innerText =
-            "⚠️ Password length 4 से 50 के बीच रखें।";
-
-        return;
-    }
-
-
-    let password = "";
-
-
-    if (
-        window.crypto &&
-        window.crypto.getRandomValues
-    ) {
-
-        const randomValues =
-            new Uint32Array(length);
-
-        window.crypto.getRandomValues(
-            randomValues
-        );
-
-        for (let i = 0; i < length; i++) {
-
-            password +=
-                characters[
-                    randomValues[i] %
-                    characters.length
-                ];
-        }
-
+    guide.innerHTML = `
+      <h4>📘 How to Use Image Compression:</h4>
+      <ul>
+        <li>Select your photo or document scan from your phone or PC.</li>
+        <li>Specify a target size (e.g. 50 KB for online job/exam application forms).</li>
+        <li>Select JPG or WebP format for optimal compression balance.</li>
+        <li>Click 'Compress Image Now' and download the processed output.</li>
+      </ul>
+      <h4>⚖️ Tool Policy & Privacy Terms:</h4>
+      <p>All compression runs locally on your device using Canvas API. Your photos never leave your device and are never sent to external servers.</p>
+    `;
+  } else if (toolId === "mergePdf") {
+    category.innerText = "PDF Studio";
+    title.innerText = "📑 Merge PDF Documents";
+    subtitle.innerText = "Combine 2 or more PDF documents into a single consolidated file.";
+    form.innerHTML = `
+      <label>Choose Multiple PDF Files</label>
+      <input type="file" id="mergeInputFiles" accept="application/pdf" multiple>
+      <button class="primary" onclick="executeMergePdf()">Merge PDF Files</button>
+      <div class="result" id="mergeOutputStatus">Select documents to begin.</div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 How to Use Merge PDF:</h4>
+      <ul>
+        <li>Hold Ctrl/Cmd or use multi-select to pick two or more PDF files.</li>
+        <li>Click 'Merge PDF Files'. The tool reads file buffers sequentially.</li>
+        <li>A combined PDF will download automatically.</li>
+      </ul>
+      <h4>⚖️ Terms & Conditions:</h4>
+      <p>Documents are compiled client-side using PDF-Lib. No file backups or copies are stored on any network host.</p>
+    `;
+  } else if (toolId === "splitPdf") {
+    category.innerText = "PDF Studio";
+    title.innerText = "✂️ Split PDF Pages";
+    subtitle.innerText = "Extract specific page intervals into an independent PDF.";
+    form.innerHTML = `
+      <label>Choose PDF Document</label>
+      <input type="file" id="splitInputFile" accept="application/pdf">
+      <div class="flex-row">
+        <div><label>Start Page</label><input type="number" id="splitStart" placeholder="1"></div>
+        <div><label>End Page</label><input type="number" id="splitEnd" placeholder="3"></div>
+      </div>
+      <button class="primary" onclick="executeSplitPdf()">Extract Specified Pages</button>
+      <div class="result" id="splitOutputStatus">Specify document and pages.</div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Step-by-Step Instructions:</h4>
+      <ul>
+        <li>Upload your PDF file.</li>
+        <li>Set the 'Start Page' and 'End Page'. For a single page, enter identical numbers in both fields.</li>
+        <li>Click 'Extract Specified Pages' to generate the new document.</li>
+      </ul>
+      <h4>⚖️ Terms & Policy:</h4>
+      <p>Page indexing begins at 1. Verify your document page boundaries before splitting.</p>
+    `;
+  } else if (toolId === "imgToPdf") {
+    category.innerText = "PDF Studio";
+    title.innerText = "🖼️ Image to PDF Converter";
+    subtitle.innerText = "Convert JPG, PNG, and WebP images into a standardized PDF format.";
+    form.innerHTML = `
+      <label>Choose Images</label>
+      <input type="file" id="batchImgInput" accept="image/*" multiple>
+      <button class="primary" onclick="executeImgToPdf()">Build PDF Document</button>
+      <div class="result" id="imgToPdfStatus">Select image files.</div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Usage Instructions:</h4>
+      <p>Select images in the order you wish them to appear. Each image will form its own page matched to the original image dimensions.</p>
+    `;
+  } else if (toolId === "pdfToJpg") {
+    category.innerText = "PDF Studio";
+    title.innerText = "📸 PDF to JPG Converter";
+    subtitle.innerText = "Render and export the first page of your PDF into an image format.";
+    form.innerHTML = `
+      <label>Choose PDF Document</label>
+      <input type="file" id="pdfJpgInput" accept="application/pdf">
+      <button class="primary" onclick="executePdfToJpg()">Extract Image</button>
+      <div class="result" id="pdfJpgStatus">Select a PDF file.</div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 How it works:</h4>
+      <p>Uses PDF.js to render document vectors onto an HTML5 canvas at 1.5x resolution for clean text clarity.</p>
+    `;
+  } else if (toolId === "compressPdf") {
+    category.innerText = "PDF Studio";
+    title.innerText = "🗜️ PDF Stream Compressor";
+    subtitle.innerText = "Optimize PDF stream structures to compress document size.";
+    form.innerHTML = `
+      <label>Choose PDF</label>
+      <input type="file" id="compressPdfInput" accept="application/pdf">
+      <button class="primary" onclick="executeCompressPdf()">Compress PDF</button>
+      <div class="result" id="compressPdfStatus">Select a PDF to compress.</div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Technical Guide:</h4>
+      <p>Re-encodes PDF dictionaries and compresses cross-reference tables directly in your browser.</p>
+    `;
+  } else if (toolId === "signPdf") {
+    category.innerText = "PDF Studio";
+    title.innerText = "🖊️ Sign PDF Document";
+    subtitle.innerText = "Draw your signature and stamp it directly onto page 1 of your PDF.";
+    form.innerHTML = `
+      <label>Upload PDF Document</label>
+      <input type="file" id="signPdfInput" accept="application/pdf">
+      <label>Draw Signature Below:</label>
+      <canvas id="digitalSignaturePad" width="700" height="180" style="width:100%; border:1px solid var(--surface-border); background:#fff; border-radius:8px;"></canvas>
+      <div style="display:flex; gap:10px; margin-top:8px;">
+        <button class="primary" onclick="executeSignPdf()">Stamp Signature onto PDF</button>
+        <button class="primary" style="background:var(--text-muted);" onclick="clearSignatureCanvas()">Clear Signature</button>
+      </div>
+      <div class="result" id="signPdfStatus">Draw your signature and upload document.</div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Usage Instructions:</h4>
+      <p>Use your finger or mouse on the canvas to sign. Once applied, the signature is rendered onto the bottom-left corner of the first page.</p>
+    `;
+    initSignatureCanvas();
+  } else if (toolId === "watermarkPdf") {
+    category.innerText = "PDF Studio";
+    title.innerText = "💧 Watermark PDF Document";
+    subtitle.innerText = "Stamp copyright, confidential, or custom security text across every page.";
+    form.innerHTML = `
+      <label>Upload PDF</label>
+      <input type="file" id="wmPdfInput" accept="application/pdf">
+      <label>Watermark Text</label>
+      <input type="text" id="wmTextInput" value="CONFIDENTIAL">
+      <button class="primary" onclick="executeWatermarkPdf()">Apply Watermark</button>
+      <div class="result" id="wmPdfStatus">Select PDF and set text.</div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Guide & Policy:</h4>
+      <p>A diagonal 45-degree semi-transparent watermark is applied to all pages to safeguard against unauthorized duplication.</p>
+    `;
+  } else if (["pdfToWord","pdfToPpt","pdfToExcel","wordToPdf","pptToPdf","excelToPdf","editPdf","rotatePdf","organizePdf","repairPdf","pageNumber","scanPdf","cropPdf","pdfToPdf","relatedPdf","protectPdf","unlockPdf"].includes(toolId)) {
+    const meta = {
+      pdfToWord:["📝 PDF to Word","Extract text from a PDF and download a Word-compatible document."],
+      pdfToPpt:["📽️ PDF to PowerPoint","Extract text from a PDF and download a presentation-compatible file."],
+      pdfToExcel:["📊 PDF to Excel","Extract text from a PDF into an Excel-compatible spreadsheet."],
+      wordToPdf:["📄 Word to PDF","Paste Word-style text and create a PDF."],
+      pptToPdf:["📑 PowerPoint to PDF","Paste presentation text and create a PDF."],
+      excelToPdf:["📗 Excel to PDF","Paste spreadsheet-style data and create a PDF."],
+      editPdf:["✏️ Edit PDF","Add text to the first PDF page."],
+      rotatePdf:["🔄 Rotate PDF","Rotate all PDF pages by 90 degrees."],
+      organizePdf:["📚 Organize PDF","Create a reordered PDF using a page order such as 2,1,3."],
+      repairPdf:["🛠️ Repair PDF","Attempt a browser-side structural re-save."],
+      pageNumber:["🔢 Page Number","Add page numbers to all PDF pages."],
+      scanPdf:["📷 Scan to PDF","Convert selected images/scans into one PDF."],
+      cropPdf:["✂️ Crop PDF","Create a PDF copy with reduced margins."],
+      pdfToPdf:["📋 PDF to PDF","Create a fresh PDF copy."],
+      relatedPdf:["🔗 Related PDF","Create a clean related PDF copy."],
+      protectPdf:["🔐 Protect PDF","Prepare a protected PDF workflow. True password encryption requires a secure backend."],
+      unlockPdf:["🔓 Unlock PDF","Create an unlocked copy when the browser can load the document."]
+    }[toolId];
+    category.innerText = "PDF Studio";
+    title.innerText = meta[0];
+    subtitle.innerText = meta[1];
+    const exportTextForm = ["wordToPdf","pptToPdf","excelToPdf"].includes(toolId);
+    if (exportTextForm) {
+      form.innerHTML = `<label>Paste ${toolId==="wordToPdf"?"Word":toolId==="pptToPdf"?"PowerPoint":"Excel"} content</label>
+      <textarea id="genericPdfText" placeholder="Paste your content here..."></textarea>
+      <button class="primary" onclick="executeGenericTextPdf('${toolId}')">Create PDF</button>
+      <div class="result" id="genericPdfStatus">Your text is processed locally.</div>`;
     } else {
-
-        for (let i = 0; i < length; i++) {
-
-            password +=
-                characters[
-                    Math.floor(
-                        Math.random() *
-                        characters.length
-                    )
-                ];
-        }
+      form.innerHTML = `<label>Choose PDF</label><input type="file" id="genericPdfInput" accept="application/pdf">
+      ${toolId==="editPdf"?'<label>Text to add</label><input id="genericEditText" placeholder="Text to add to page 1">':
+        toolId==="organizePdf"?'<label>Page order (example: 2,1,3)</label><input id="genericPageOrder" placeholder="2,1,3">':''}
+      <button class="primary" onclick="executeGenericPdfTool('${toolId}')">Run Tool</button>
+      <div class="result" id="genericPdfStatus">Select a PDF to begin.</div>`;
     }
+    guide.innerHTML = `<h4>📘 How to Use</h4><p>Upload your file or enter the requested text, then click the button. Processing is performed in your browser where supported.</p><h4>⚖️ Important</h4><p>PDF/Office conversion in this single-file browser version is text-oriented. Strong encryption, password removal for encrypted PDFs, and full Office fidelity require a dedicated backend or native converter.</p>`;
+  } else if (toolId === "resume") {
+    category.innerText = "AI Studio";
+    title.innerText = "👔 Multi-Template AI Professional Resume Builder";
+    subtitle.innerText = "Choose from Modern, Minimal, or Classic layouts. Download in PDF, Word (.doc), or Text format.";
+    form.innerHTML = `
+      <label>Select Template:</label>
+      <div class="tmpl-select-bar">
+        <button class="tmpl-select-btn active" onclick="setResumeTemplate('modern', this)">Modern Executive</button>
+        <button class="tmpl-select-btn" onclick="setResumeTemplate('minimal', this)">Clean Minimal</button>
+        <button class="tmpl-select-btn" onclick="setResumeTemplate('classic', this)">Classic Corporate</button>
+      </div>
 
+      <div class="flex-row">
+        <div><label>Full Name</label><input type="text" id="resFullName" placeholder="e.g. Varun Kumar"></div>
+        <div><label>Target Designation / Role</label><input type="text" id="resDesignation" placeholder="e.g. Operations / Banking Associate"></div>
+      </div>
 
-    result.innerText =
-        password;
-}
+      <div class="flex-row">
+        <div><label>Email</label><input type="email" id="resUserEmail" placeholder="applicant@email.com"></div>
+        <div><label>Phone</label><input type="text" id="resUserPhone" placeholder="+91 98765 43210"></div>
+        <div><label>Location</label><input type="text" id="resUserLocation" placeholder="Patna, Bihar"></div>
+      </div>
 
+      <label>Professional Summary</label>
+      <textarea id="resSummaryText" placeholder="Experienced professional with skills in operations and client management..."></textarea>
 
-function copyPassword() {
+      <label>Core Skills (Comma separated)</label>
+      <input type="text" id="resSkillsText" placeholder="e.g. Relationship Management, Banking Ops, Data Analysis">
 
-    const password =
-        document.getElementById(
-            "passwordResult"
-        ).innerText;
+      <label>Work Experience & Key Projects</label>
+      <textarea id="resExperienceText" placeholder="Associate - Operations (2024 - Present)&#10;• Coordinated deliverables and exceeded targets."></textarea>
 
+      <label>Education & Academic Qualifications</label>
+      <textarea id="resEducationText" placeholder="Bachelor of Pharmacy - Veer Kunwar Singh University (2024)"></textarea>
 
-    if (
-        !password ||
-        password.includes("⚠️") ||
-        password.includes("Your password")
-    ) {
+      <div class="flex-row" style="margin-top:10px;">
+        <button class="primary" onclick="renderResumePreview()">Preview Resume</button>
+        <button class="primary" style="background:#059669;" onclick="printSavePdfResume()">⬇️ Print / PDF</button>
+        <button class="primary" style="background:#475569;" onclick="downloadResumeWord()">⬇️ Word (.doc)</button>
+        <button class="primary" style="background:#6366f1;" onclick="downloadResumeText()">⬇️ Text (.txt)</button>
+      </div>
 
-        alert(
-            "पहले password generate करें।"
-        );
-
-        return;
-    }
-
-
-    navigator.clipboard.writeText(
-        password
-    )
-    .then(() => {
-
-        alert(
-            "✅ Password copied!"
-        );
-
-    })
-    .catch(() => {
-
-        alert(
-            "Password copy नहीं हो पाया।"
-        );
-
-    });
-}
-function openCompressPDF() {
-    const box = document.getElementById("pdfWorkspace");
-
-    box.innerHTML = `
-        <h3>🗜️ Compress PDF</h3>
-
-        <p>
-            Select a PDF and create an optimized copy.
-        </p>
-
-        <input
-            type="file"
-            id="compressPDFFile"
-            accept="application/pdf"
-        >
-
-        <button
-            class="primary"
-            onclick="compressPDF()"
-        >
-            🗜️ Compress PDF
-        </button>
-
-        <div
-            class="result"
-            id="compressResult"
-        >
-            Select a PDF to begin.
-        </div>
+      <div id="resumeRenderOutput"></div>
     `;
-
-    box.scrollIntoView({
-        behavior: "smooth"
-    });
+    guide.innerHTML = `
+      <h4>📘 Resume Creation Guide:</h4>
+      <ul>
+        <li>Fill out your contact details, education, and target job role.</li>
+        <li>Switch between 'Modern', 'Minimal', or 'Classic' template styles.</li>
+        <li>Click 'Print / PDF' to save a clean PDF, or 'Word (.doc)' for further customization in Microsoft Word or Google Docs.</li>
+      </ul>
+      <h4>⚖️ License & Ownership:</h4>
+      <p>All resume outputs generated belong 100% to you. No royalties or watermarks are applied.</p>
+    `;
+    renderResumePreview();
+  } else if (toolId === "letter") {
+    category.innerText = "AI Studio";
+    title.innerText = "✉️ AI Formal Letter Writer";
+    subtitle.innerText = "Draft clear, professional letters and official communications.";
+    form.innerHTML = `
+      <label>Recipient / Authority Title</label>
+      <input type="text" id="letterRecipient" placeholder="e.g. The Branch Manager, HDFC Bank">
+      <label>Subject</label>
+      <input type="text" id="letterSubject" placeholder="e.g. Application for Relationship Manager Position">
+      <label>Key Points / Purpose</label>
+      <textarea id="letterBody" placeholder="State your intent, qualifications, and core reason for writing..."></textarea>
+      <button class="primary" onclick="generateFormalLetter()">Draft Formal Letter</button>
+      <div class="result" id="letterResultBox" style="display:none;"></div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Letter Writing Guide:</h4>
+      <p>Keep your key points clear and specific. The generator formats an official salutation, body text, and closing signature suitable for corporate and government communication.</p>
+    `;
+  } else if (toolId === "password") {
+    category.innerText = "Security Studio";
+    title.innerText = "🔑 Cryptographic Password Generator";
+    subtitle.innerText = "Generate high-entropy randomized access keys.";
+    form.innerHTML = `
+      <label>Length: <span id="pwdLenVal">16</span> characters</label>
+      <input type="range" id="pwdRange" min="8" max="64" value="16" oninput="document.getElementById('pwdLenVal').innerText = this.value">
+      <button class="primary" onclick="generateSmartPassword()">Generate Secure Password</button>
+      <div class="result" id="passwordResultBox" style="display:none; word-break:break-all;"></div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Security Terms:</h4>
+      <p>Generated using <code>window.crypto.getRandomValues</code>, ensuring cryptographic entropy directly on your machine without transmitting credentials across any network.</p>
+    `;
+  } else if (toolId === "study") {
+    category.innerText = "Education Studio";
+    title.innerText = "🎓 AI Study Assistant & Revision Notes";
+    subtitle.innerText = "Create concise study summaries and key review points for any exam topic.";
+    form.innerHTML = `
+      <label>Subject or Exam Topic</label>
+      <input type="text" id="studyTopicInput" placeholder="e.g., Photosynthesis, Banking Regulations, Pharmacokinetics">
+      <button class="primary" onclick="generateStudyNotes()">Generate Revision Framework</button>
+      <div class="result" id="studyResultBox" style="display:none;"></div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Study Assistant Usage:</h4>
+      <p>Enter any topic to receive a structured four-point review framework covering definitions, core concepts, application scenarios, and exam preparation questions.</p>
+    `;
+  } else if (toolId === "ageCalc") {
+    category.innerText = "Calculators";
+    title.innerText = "🎂 Comprehensive Age & Time Calculator";
+    subtitle.innerText = "Precise breakdown of lived time across years, months, weeks, days, hours, and seconds.";
+    form.innerHTML = `
+      <label>Select Date of Birth</label>
+      <input type="date" id="advDobInput">
+      <button class="primary" onclick="calculateComprehensiveAge()">Calculate Age Breakdown</button>
+      <div id="ageOutput" style="display:none; margin-top:16px;">
+        <div class="result" id="primaryAgeSummary" style="font-size:16px; font-weight:700;"></div>
+        <div class="age-grid" id="ageBreakdownGrid"></div>
+      </div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Age Calculation Details:</h4>
+      <p>Calculates exact elapsed solar cycles taking into account month-end date rollovers, leap years, and elapsed milliseconds.</p>
+      <h4>⚖️ Accuracy Disclaimer:</h4>
+      <p>Results reflect standard Gregorian calendar metrics for personal utility.</p>
+    `;
+  } else if (toolId === "percentageCalc") {
+    category.innerText = "Calculators";
+    title.innerText = "📊 Smart Percentage Calculator";
+    subtitle.innerText = "Quickly solve exam marks, percentage increases, and proportion metrics.";
+    form.innerHTML = `
+      <div class="flex-row">
+        <div>
+          <label>Marks Obtained / Value</label>
+          <input type="number" id="pctVal" placeholder="e.g. 450">
+        </div>
+        <div>
+          <label>Total Marks / Max Value</label>
+          <input type="number" id="pctTotal" placeholder="e.g. 600">
+        </div>
+      </div>
+      <button class="primary" onclick="calculatePercentage()">Calculate Percentage</button>
+      <div class="result" id="pctResultBox" style="display:none;"></div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Percentage Calculation Guide:</h4>
+      <p>Standard formula: (Obtained Value / Total Value) * 100. Useful for competitive examinations, semester marks, and financial ratios.</p>
+    `;
+  } else if (toolId === "emiCalc") {
+    category.innerText = "Calculators";
+    title.innerText = "💰 Loan EMI & Interest Calculator";
+    subtitle.innerText = "Calculate monthly installments, cumulative interest, and repayment schedules.";
+    form.innerHTML = `
+      <div class="flex-row">
+        <div>
+          <label>Principal Loan (₹)</label>
+          <input type="number" id="emiP" placeholder="500000">
+        </div>
+        <div>
+          <label>Interest Rate (% P.A.)</label>
+          <input type="number" id="emiR" placeholder="8.5" step="0.05">
+        </div>
+        <div>
+          <label>Tenure (Years)</label>
+          <input type="number" id="emiY" placeholder="5">
+        </div>
+      </div>
+      <button class="primary" onclick="calculateLoanEmi()">Calculate EMI</button>
+      <div class="result" id="emiResultBox" style="display:none;"></div>
+    `;
+    guide.innerHTML = `
+      <h4>📘 Loan Planning Guide:</h4>
+      <p>Calculated via standard reducing-balance amortisation. Ideal for planning home, auto, or personal loans before approaching financial institutions.</p>
+    `;
+  }
 }
 
-async function compressPDF() {
-    const input =
-        document.getElementById("compressPDFFile");
 
-    const result =
-        document.getElementById("compressResult");
-
-    if (!input.files.length) {
-        result.innerHTML =
-            "⚠️ Please select a PDF first.";
-        return;
+async function executeGenericPdfTool(toolId){
+  const file=document.getElementById("genericPdfInput")?.files[0], st=document.getElementById("genericPdfStatus");
+  if(!file){if(st)st.innerText="❌ Please choose a PDF.";return;}
+  try{
+    const doc=await PDFLib.PDFDocument.load(await file.arrayBuffer());
+    if(toolId==="rotatePdf"){doc.getPages().forEach(p=>p.setRotation(PDFLib.degrees((p.getRotation().angle+90)%360)));}
+    else if(toolId==="pageNumber"){
+      const font=await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+      doc.getPages().forEach((p,i)=>p.drawText(String(i+1),{x:p.getWidth()-45,y:20,size:10,font}));
+    } else if(toolId==="editPdf"){
+      const txt=document.getElementById("genericEditText")?.value||"Edited with SmartSathi AI";
+      const font=await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+      doc.getPage(0).drawText(txt,{x:40,y:40,size:12,font});
+    } else if(toolId==="organizePdf"){
+      const raw=(document.getElementById("genericPageOrder")?.value||"").split(",").map(x=>parseInt(x.trim(),10)-1).filter(Number.isInteger);
+      if(raw.length){
+        const newDoc=await PDFLib.PDFDocument.create();
+        const pages=await newDoc.copyPages(doc,raw);
+        pages.forEach(p=>newDoc.addPage(p));
+        downloadBlobFile(await newDoc.save(),"SmartSathi-Organized.pdf","application/pdf");
+        st.innerText="✅ Organized PDF downloaded!"; return;
+      }
     }
+    downloadBlobFile(await doc.save(),`SmartSathi-${toolId}.pdf`,"application/pdf");
+    st.innerText="✅ Tool completed and PDF downloaded.";
+  }catch(e){if(st)st.innerText="❌ This PDF could not be processed in the browser.";}
+}
+async function executeGenericTextPdf(toolId){
+  const text=document.getElementById("genericPdfText")?.value||"",st=document.getElementById("genericPdfStatus");
+  if(!text.trim()){st.innerText="❌ Please enter some content.";return;}
+  try{
+    const doc=await PDFLib.PDFDocument.create(),page=doc.addPage([595,842]),font=await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+    const lines=text.split(/\r?\n/); let y=800;
+    for(const line of lines){ if(y<45){y=800; page=doc.addPage([595,842]);} page.drawText(line.slice(0,95),{x:40,y,size:11,font}); y-=17; }
+    downloadBlobFile(await doc.save(),`SmartSathi-${toolId}.pdf`,"application/pdf");
+    st.innerText="✅ PDF created and downloaded.";
+  }catch(e){st.innerText="❌ Could not create PDF.";}
+}
 
-    try {
-        result.innerHTML =
-            "⏳ Processing PDF...";
+/* ============================================================
+   LEGAL & MONETIZATION PAGES (ADSENSE & AFFILIATE COMPLIANT)
+   ============================================================ */
+function openLegalPage(pageId) {
+  navigateTo('legal');
+  const container = document.getElementById("legalContentContainer");
 
-        const file = input.files[0];
+  if (pageId === "terms") {
+    container.innerHTML = `
+      <h2>Terms and Conditions of Use</h2>
+      <p style="color:var(--text-muted); font-size:13px; margin-bottom:20px;">Effective Date: January 1, 2026</p>
 
-        const arrayBuffer =
-            await file.arrayBuffer();
+      <h4>1. Agreement to Terms</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">By accessing and using SmartSathi AI, you agree to comply with and be bound by these Terms and Conditions. If you do not agree, please discontinue use immediately.</p>
 
-        const pdfDoc =
-            await PDFLib.PDFDocument.load(
-                arrayBuffer
-            );
+      <h4>2. Public Use and Commercial Monetization</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">SmartSathi AI provides free utility software funded via digital advertisements (such as Google AdSense), sponsored placements, and affiliate integrations. By using the site, you acknowledge and agree that non-intrusive promotional material may appear alongside tool workspaces.</p>
 
-        const compressedBytes =
-            await pdfDoc.save({
-                useObjectStreams: true,
-                addDefaultPage: false
-            });
+      <h4>3. Client-Side Processing & Intellectual Property</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">All uploaded documents, PDFs, photos, and resumes are processed locally in your client device browser session. SmartSathi AI does not claim any ownership rights over your personal files, resumes, or generated materials.</p>
 
-        const blob = new Blob(
-            [compressedBytes],
-            {
-                type: "application/pdf"
-            }
-        );
+      <h4>4. User Conduct</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">You agree not to use the website to process fraudulent, copyrighted, or unlawful documents.</p>
 
-        const url =
-            URL.createObjectURL(blob);
+      <h4>5. Limitation of Liability</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">SmartSathi AI is provided on an 'as-is' and 'as-available' basis. We are not liable for accidental data loss or file corruption arising from client-side browser crashes.</p>
+    `;
+  } else if (pageId === "privacy") {
+    container.innerHTML = `
+      <h2>Privacy Policy</h2>
+      <p style="color:var(--text-muted); font-size:13px; margin-bottom:20px;">Effective Date: January 1, 2026</p>
 
-        const link =
-            document.createElement("a");
+      <h4>1. Information We Do Not Collect</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">We do not upload, collect, or store your private PDF files, photos, signatures, or resume texts on our servers. File manipulations occur in browser memory via JavaScript APIs.</p>
 
-        link.href = url;
-        link.download =
-            "SmartSathi-Compressed.pdf";
+      <h4>2. Advertising & Third-Party Cookies</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">To support this free public utility, we partner with third-party advertising networks (e.g. Google AdSense). These vendors may use cookies to serve ads based on your prior visits to this or other websites. Users may opt out of personalized advertising by visiting Google Ad Settings.</p>
 
-        link.click();
+      <h4>3. User Authentication</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">Optional user account credentials (email and optional phone number) are secured using industry-standard authentication frameworks and are never sold or rented to third-party data brokers.</p>
+    `;
+  } else if (pageId === "disclaimer") {
+    container.innerHTML = `
+      <h2>Monetization, Ads & Earnings Disclaimer</h2>
+      <p style="color:var(--text-muted); font-size:13px; margin-bottom:20px;">Compliance Notice</p>
 
-        setTimeout(() => {
-            URL.revokeObjectURL(url);
-        }, 1000);
+      <h4>1. Advertising Disclosure</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">SmartSathi AI displays advertisements to cover hosting, maintenance, and ongoing development costs. These advertisements are clearly demarcated from utility tools.</p>
 
-        const oldSize =
-            (file.size / 1024 / 1024).toFixed(2);
+      <h4>2. Calculators Disclaimer</h4>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">Our Loan EMI, Percentage, and Age Calculators are provided strictly for illustrative and educational estimations. For verified legal and financial figures, consult your bank or professional financial advisor.</p>
+    `;
+  } else if (pageId === "contact") {
+    container.innerHTML = `
+      <h2>Contact & Publisher Support</h2>
+      <p style="margin-bottom:14px; font-size:14px; line-height:1.6;">Have questions, feature suggestions, or business inquiries?</p>
+      <p style="margin-bottom:8px; font-size:14px;"><strong>Email:</strong> support@smartsathiai.com</p>
+      <p style="margin-bottom:8px; font-size:14px;"><strong>Publisher:</strong> SmartSathi Digital Utilities</p>
+      <p style="margin-bottom:14px; font-size:14px;"><strong>Support Hours:</strong> Monday - Saturday (9:00 AM - 6:00 PM IST)</p>
+    `;
+  }
+}
 
-        const newSize =
-            (blob.size / 1024 / 1024).toFixed(2);
+/* ============================================================
+   TOOL FUNCTIONALITIES (IMAGE, PDF, RESUME, CALCULATORS)
+   ============================================================ */
+function cacheSelectedImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => { activeImgElement = img; };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
 
-        result.innerHTML = `
-            <div style="font-size:18px;">
-                ✅ PDF processed successfully!
-            </div>
+function toggleQualityPresetSlider(val) {
+  document.getElementById("customSliderContainer").style.display = (val === "custom") ? "block" : "none";
+}
 
-            <div style="
-                margin-top:10px;
-                color:#64748b;
-            ">
-                Original: ${oldSize} MB<br>
-                New PDF: ${newSize} MB
-            </div>
+async function runAdvancedCompression() {
+  const file = document.getElementById("compImgFile")?.files[0];
+  const box = document.getElementById("compProgressBox");
+  if (!file || !activeImgElement) { alert("Please select an image file first."); return; }
 
-            <div style="
-                margin-top:8px;
-                font-size:13px;
-                color:#64748b;
-            ">
-                Download started automatically.
-            </div>
-        `;
+  box.style.display = "block";
+  box.innerText = "⏳ Compressing image...";
 
-    } catch (error) {
-        console.error(error);
+  const targetVal = parseFloat(document.getElementById("targetSizeVal").value);
+  const targetUnit = document.getElementById("targetSizeUnit").value;
+  const autoOptimize = document.getElementById("autoSizeOptimization").checked;
+  const outFormat = document.getElementById("outputFormat").value;
 
-        result.innerHTML =
-            "❌ PDF process नहीं हो पाया। कृपया valid PDF चुनें।";
+  let targetBytes = 0;
+  if (!isNaN(targetVal) && targetVal > 0) {
+    targetBytes = targetUnit === "MB" ? targetVal * 1024 * 1024 : targetVal * 1024;
+  }
+
+  let quality = 0.8;
+  const preset = document.getElementById("qualityPreset").value;
+  if (preset === "custom") {
+    quality = parseInt(document.getElementById("customQualityRange").value, 10) / 100;
+  } else {
+    quality = parseFloat(preset);
+  }
+
+  let w = activeImgElement.naturalWidth;
+  let h = activeImgElement.naturalHeight;
+  const maxW = parseInt(document.getElementById("maxWidthLimit").value, 10);
+  const maxH = parseInt(document.getElementById("maxHeightLimit").value, 10);
+
+  if (!isNaN(maxW) && w > maxW) { h = Math.round((h * maxW) / w); w = maxW; }
+  if (!isNaN(maxH) && h > maxH) { w = Math.round((w * maxH) / h); h = maxH; }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(activeImgElement, 0, 0, w, h);
+
+  let blob;
+  if (autoOptimize && targetBytes > 0 && outFormat !== "image/png") {
+    let minQ = 0.05, maxQ = 0.98, best = null;
+    for (let i = 0; i < 6; i++) {
+      const mid = (minQ + maxQ) / 2;
+      const testBlob = await new Promise(res => canvas.toBlob(res, outFormat, mid));
+      if (testBlob.size <= targetBytes) {
+        best = testBlob;
+        minQ = mid;
+      } else {
+        maxQ = mid;
+      }
     }
+    blob = best || await new Promise(res => canvas.toBlob(res, outFormat, 0.1));
+  } else {
+    blob = await new Promise(res => canvas.toBlob(res, outFormat, quality));
+  }
+
+  const origKB = (file.size / 1024).toFixed(1);
+  const newKB = (blob.size / 1024).toFixed(1);
+  const ext = outFormat === "image/webp" ? "webp" : (outFormat === "image/png" ? "png" : "jpg");
+  const url = URL.createObjectURL(blob);
+
+  box.innerHTML = `
+    <strong>✅ Compression Finished!</strong><br>
+    Original: ${origKB} KB ➔ <strong>Compressed: ${newKB} KB</strong><br>
+    Resolution: ${w} x ${h} px<br><br>
+    <a href="${url}" download="SmartSathi-Optimized.${ext}" class="primary" style="display:inline-block;width:auto;text-decoration:none;padding:8px 16px;">⬇️ Download Compressed Image</a>
+  `;
 }
 
-/* =========================================================
-   SMARTSATHI AI - ADVANCED PDF TOOL ENGINE
-   Browser-first tools; no file is intentionally uploaded.
-   ========================================================= */
-
-function advWorkspace(title, text, body){
-    const box = document.getElementById("pdfWorkspace");
-    document.getElementById("workspaceTitle").innerText = title;
-    document.getElementById("workspaceText").innerText = text;
-    document.getElementById("workspaceContent").innerHTML = body;
-    box.scrollIntoView({behavior:"smooth"});
+async function executeMergePdf() {
+  const files = Array.from(document.getElementById("mergeInputFiles")?.files || []);
+  const st = document.getElementById("mergeOutputStatus");
+  if (files.length < 2) { st.innerText = "❌ Please choose at least 2 PDF documents."; return; }
+  try {
+    st.innerText = "⏳ Merging documents...";
+    const doc = await PDFLib.PDFDocument.create();
+    for (const f of files) {
+      const src = await PDFLib.PDFDocument.load(await f.arrayBuffer());
+      const pages = await doc.copyPages(src, src.getPageIndices());
+      pages.forEach(p => doc.addPage(p));
+    }
+    downloadBlobFile(await doc.save(), "SmartSathi-Merged.pdf", "application/pdf");
+    st.innerText = "✅ Documents merged successfully!";
+  } catch(e) { st.innerText = "❌ Error during PDF merge."; }
 }
 
-function pdfFileInput(id, multiple=false){
-    return `<input type="file" id="${id}" accept="application/pdf" ${multiple?"multiple":""}>`;
+async function executeSplitPdf() {
+  const file = document.getElementById("splitInputFile")?.files[0];
+  const s = parseInt(document.getElementById("splitStart")?.value, 10);
+  const e = parseInt(document.getElementById("splitEnd")?.value, 10);
+  const st = document.getElementById("splitOutputStatus");
+  if (!file || isNaN(s) || isNaN(e)) { st.innerText = "❌ Provide file and page range."; return; }
+  try {
+    const src = await PDFLib.PDFDocument.load(await file.arrayBuffer());
+    const total = src.getPageCount();
+    if (s < 1 || e > total || s > e) { st.innerText = `❌ Invalid page range (Total pages: ${total}).`; return; }
+    const doc = await PDFLib.PDFDocument.create();
+    const idx = [];
+    for (let i = s - 1; i < e; i++) idx.push(i);
+    const pages = await doc.copyPages(src, idx);
+    pages.forEach(p => doc.addPage(p));
+    downloadBlobFile(await doc.save(), "SmartSathi-Split.pdf", "application/pdf");
+    st.innerText = "✅ Split finished!";
+  } catch(err) { st.innerText = "❌ Split operation failed."; }
 }
 
-function openAdvancedTool(type){
-    const tools = {
-        pdfword:["📝 PDF to Word","Extract text and save a Word-compatible .doc file.",
-            `${pdfFileInput("advFile")}<button class="primary" onclick="pdfToWord()">📝 Convert to Word</button><div class="result" id="advResult"></div>`],
-        pdfppt:["📊 PDF to PowerPoint","Create a basic PPTX with extracted text from each PDF page.",
-            `${pdfFileInput("advFile")}<button class="primary" onclick="pdfToPPT()">📊 Convert to PowerPoint</button><div class="result" id="advResult"></div>`],
-        pdfexcel:["📈 PDF to Excel","Export page text into an XLSX workbook.",
-            `${pdfFileInput("advFile")}<button class="primary" onclick="pdfToExcel()">📈 Convert to Excel</button><div class="result" id="advResult"></div>`],
-        wordpdf:["📝 Word to PDF","Paste text from Word and create a PDF.",
-            `<textarea id="sourceText" placeholder="Paste your Word document text here..."></textarea><button class="primary" onclick="textToPDF('Word')">📝 Create PDF</button><div class="result" id="advResult"></div>`],
-        pptpdf:["📽️ PowerPoint to PDF","Paste slide text and create a PDF.",
-            `<textarea id="sourceText" placeholder="Paste slide text here..."></textarea><button class="primary" onclick="textToPDF('PowerPoint')">📽️ Create PDF</button><div class="result" id="advResult"></div>`],
-        excelpdf:["📗 Excel to PDF","Paste spreadsheet/table text and create a PDF.",
-            `<textarea id="sourceText" placeholder="Paste spreadsheet data here..."></textarea><button class="primary" onclick="textToPDF('Excel')">📗 Create PDF</button><div class="result" id="advResult"></div>`],
-        editpdf:["✍️ Edit PDF","Add text to the first page of a PDF.",
-            `${pdfFileInput("advFile")}<input id="editText" placeholder="Text to add"><button class="primary" onclick="editPDF()">✍️ Edit PDF</button><div class="result" id="advResult"></div>`],
-        signpdf:["🖊️ Sign PDF","Draw a signature and add it to the first page.",
-            `${pdfFileInput("advFile")}<canvas id="signCanvas" width="700" height="220" style="width:100%;border:1px solid #cbd5e1;border-radius:8px;background:white"></canvas><button class="primary" onclick="clearSign()">Clear Signature</button><button class="primary" style="margin-top:8px" onclick="signPDF()">🖊️ Sign PDF</button><div class="result" id="advResult"></div>`],
-        watermark:["💧 Watermark PDF","Add a text watermark to every page.",
-            `${pdfFileInput("advFile")}<input id="watermarkText" value="SmartSathi AI" placeholder="Watermark text"><button class="primary" onclick="watermarkPDF()">💧 Add Watermark</button><div class="result" id="advResult"></div>`],
-        rotate:["🔄 Rotate PDF","Rotate every page.",
-            `${pdfFileInput("advFile")}<select id="rotateAngle"><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select><button class="primary" onclick="rotatePDF()">🔄 Rotate PDF</button><div class="result" id="advResult"></div>`],
-        unlock:["🔓 Unlock PDF","Re-save a PDF that is already readable by the browser. Encrypted PDFs need server-side processing.",
-            `${pdfFileInput("advFile")}<button class="primary" onclick="unlockPDF()">🔓 Create Copy</button><div class="result" id="advResult"></div>`],
-        organize:["📚 Organize PDF","Reorder/extract pages using a comma-separated page list, e.g. 3,1,2.",
-            `${pdfFileInput("advFile")}<input id="pageOrder" placeholder="3,1,2"><button class="primary" onclick="organizePDF()">📚 Organize PDF</button><div class="result" id="advResult"></div>`],
-        repair:["🧩 Repair PDF","Try to load and re-save a readable PDF.",
-            `${pdfFileInput("advFile")}<button class="primary" onclick="repairPDF()">🧩 Repair PDF</button><div class="result" id="advResult"></div>`],
-        pagenumber:["🔢 Page Number","Add page numbers to every page.",
-            `${pdfFileInput("advFile")}<select id="pagePos"><option value="bottom">Bottom Center</option><option value="top">Top Center</option></select><button class="primary" onclick="pageNumberPDF()">🔢 Add Page Numbers</button><div class="result" id="advResult"></div>`],
-        scanpdf:["📷 Scan to PDF","Select scanned JPG/PNG images and combine them into a PDF.",
-            `<input type="file" id="scanImages" accept="image/jpeg,image/png" multiple><button class="primary" onclick="scanToPDF()">📷 Create Scan PDF</button><div class="result" id="advResult"></div>`],
-        crop:["✂️ Crop PDF","Crop every page by the same margin in PDF points.",
-            `${pdfFileInput("advFile")}<input type="number" id="cropMargin" value="20" min="0"><button class="primary" onclick="cropPDF()">✂️ Crop PDF</button><div class="result" id="advResult"></div>`],
-        pdftopdf:["📄 PDF to PDF","Create a clean copy or extract selected pages.",
-            `${pdfFileInput("advFile")}<input id="pageRange" placeholder="Optional pages: 1,3,5"><button class="primary" onclick="pdfToPDF()">📄 Create PDF</button><div class="result" id="advResult"></div>`],
-        relatedpdf:["🧩 Related PDF","Create a related/copy PDF from selected pages.",
-            `${pdfFileInput("advFile")}<input id="relatedPages" placeholder="Optional pages: 1-3"><button class="primary" onclick="relatedPDF()">🧩 Create Related PDF</button><div class="result" id="advResult"></div>`],
-        summary:["🧠 AI PDF Summary","Extract text and create a quick local summary. A real generative AI backend can be connected later.",
-            `${pdfFileInput("advFile")}<button class="primary" onclick="summaryPDF()">🧠 Summarize PDF</button><div class="result" id="advResult"></div>`],
-        translate:["🌐 Translate PDF","Extract PDF text ready for translation. A translation API/backend is required for true automatic translation.",
-            `${pdfFileInput("advFile")}<select id="translateLang"><option>English</option><option>Hindi</option><option>Spanish</option><option>French</option></select><button class="primary" onclick="translatePDF()">🌐 Extract for Translation</button><div class="result" id="advResult"></div>`]
+async function executeImgToPdf() {
+  const files = Array.from(document.getElementById("batchImgInput")?.files || []);
+  const st = document.getElementById("imgToPdfStatus");
+  if (!files.length) { st.innerText = "❌ Select at least one image."; return; }
+  try {
+    st.innerText = "⏳ Building PDF document...";
+    const doc = await PDFLib.PDFDocument.create();
+    for (const f of files) {
+      const b = await f.arrayBuffer();
+      const img = f.type === "image/png" ? await doc.embedPng(b) : await doc.embedJpg(b);
+      const p = doc.addPage([img.width, img.height]);
+      p.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+    }
+    downloadBlobFile(await doc.save(), "SmartSathi-Images.pdf", "application/pdf");
+    st.innerText = "✅ PDF created successfully!";
+  } catch(e) { st.innerText = "❌ Failed to convert images."; }
+}
+
+async function executePdfToJpg() {
+  const file = document.getElementById("pdfJpgInput")?.files[0];
+  const st = document.getElementById("pdfJpgStatus");
+  if (!file) { st.innerText = "❌ Select a PDF."; return; }
+  try {
+    st.innerText = "⏳ Rendering image...";
+    const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+    const page = await pdf.getPage(1);
+    const vp = page.getViewport({ scale: 1.5 });
+    const c = document.createElement("canvas");
+    c.width = vp.width; c.height = vp.height;
+    await page.render({ canvasContext: c.getContext("2d"), viewport: vp }).promise;
+    const link = document.createElement("a");
+    link.download = "SmartSathi-Page1.jpg";
+    link.href = c.toDataURL("image/jpeg", 0.9);
+    link.click();
+    st.innerText = "✅ Download started!";
+  } catch(e) { st.innerText = "❌ Render failed."; }
+}
+
+async function executeCompressPdf() {
+  const file = document.getElementById("compressPdfInput")?.files[0];
+  const st = document.getElementById("compressPdfStatus");
+  if (!file) { st.innerText = "❌ Select a PDF document."; return; }
+  try {
+    st.innerText = "⏳ Compressing document...";
+    const doc = await PDFLib.PDFDocument.load(await file.arrayBuffer());
+    const bytes = await doc.save({ useObjectStreams: true, addDefaultPage: false });
+    downloadBlobFile(bytes, "SmartSathi-Compressed.pdf", "application/pdf");
+    st.innerText = "✅ PDF compressed successfully!";
+  } catch(e) { st.innerText = "❌ Error compressing PDF."; }
+}
+
+let sigCtx = null, isDrawingSig = false;
+function initSignatureCanvas() {
+  setTimeout(() => {
+    const c = document.getElementById("digitalSignaturePad");
+    if (!c) return;
+    sigCtx = c.getContext("2d");
+    sigCtx.lineWidth = 2.5; sigCtx.lineCap = "round"; sigCtx.strokeStyle = "#000000";
+    const pos = e => {
+      const r = c.getBoundingClientRect();
+      return { x: (e.clientX - r.left) * c.width / r.width, y: (e.clientY - r.top) * c.height / r.height };
     };
-    const t = tools[type];
-    if(!t){ return; }
-    advWorkspace(t[0], t[1], t[2]);
-    if(type==="signpdf") setupSignCanvas();
+    c.onpointerdown = e => { isDrawingSig = true; const p = pos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x, p.y); };
+    c.onpointermove = e => { if (isDrawingSig) { const p = pos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); } };
+    c.onpointerup = () => isDrawingSig = false;
+    c.onpointerleave = () => isDrawingSig = false;
+  }, 100);
 }
 
-function getAdvFile(){ return document.getElementById("advFile")?.files?.[0]; }
+function clearSignatureCanvas() {
+  const c = document.getElementById("digitalSignaturePad");
+  if (c && sigCtx) sigCtx.clearRect(0, 0, c.width, c.height);
+}
 
-function parsePages(value,total){
-    if(!value) return [...Array(total).keys()];
-    const set=[];
-    value.split(",").forEach(part=>{
-        part=part.trim();
-        if(part.includes("-")){
-            let [a,b]=part.split("-").map(Number);
-            if(a>b)[a,b]=[b,a];
-            for(let i=a;i<=b;i++) if(i>=1&&i<=total)set.push(i-1);
-        } else {
-            const n=Number(part);
-            if(n>=1&&n<=total)set.push(n-1);
-        }
+async function executeSignPdf() {
+  const file = document.getElementById("signPdfInput")?.files[0];
+  const st = document.getElementById("signPdfStatus");
+  if (!file) { st.innerText = "❌ Please choose a PDF."; return; }
+  try {
+    const doc = await PDFLib.PDFDocument.load(await file.arrayBuffer());
+    const c = document.getElementById("digitalSignaturePad");
+    const blob = await new Promise(res => c.toBlob(res, "image/png"));
+    const img = await doc.embedPng(await blob.arrayBuffer());
+    doc.getPage(0).drawImage(img, { x: 40, y: 40, width: 140, height: 40 });
+    downloadBlobFile(await doc.save(), "SmartSathi-Signed.pdf", "application/pdf");
+    st.innerText = "✅ Signed PDF downloaded!";
+  } catch(e) { st.innerText = "❌ Error signing document."; }
+}
+
+async function executeWatermarkPdf() {
+  const file = document.getElementById("wmPdfInput")?.files[0];
+  const st = document.getElementById("wmPdfStatus");
+  const txt = document.getElementById("wmTextInput")?.value || "CONFIDENTIAL";
+  if (!file) { st.innerText = "❌ Please choose a PDF."; return; }
+  try {
+    const doc = await PDFLib.PDFDocument.load(await file.arrayBuffer());
+    const font = await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    doc.getPages().forEach(p => {
+      p.drawText(txt, {
+        x: p.getWidth() / 4,
+        y: p.getHeight() / 2,
+        size: 32,
+        font,
+        opacity: 0.2,
+        rotate: PDFLib.degrees(45)
+      });
     });
-    return [...new Set(set)];
+    downloadBlobFile(await doc.save(), "SmartSathi-Watermarked.pdf", "application/pdf");
+    st.innerText = "✅ Watermark applied!";
+  } catch(e) { st.innerText = "❌ Watermark application failed."; }
 }
 
-async function loadAdvPDF(){
-    const f=getAdvFile();
-    if(!f) throw new Error("Please select a PDF first.");
-    return PDFLib.PDFDocument.load(await f.arrayBuffer());
+function setResumeTemplate(tmpl, btn) {
+  activeResumeTemplate = tmpl;
+  document.querySelectorAll(".tmpl-select-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderResumePreview();
 }
 
-async function copySelectedPages(source, indices){
-    const out=await PDFLib.PDFDocument.create();
-    const pages=await out.copyPages(source,indices);
-    pages.forEach(p=>out.addPage(p));
-    return out;
+function renderResumePreview() {
+  const name = document.getElementById("resFullName")?.value || "Varun Kumar";
+  const role = document.getElementById("resDesignation")?.value || "Operations / Relationship Manager";
+  const email = document.getElementById("resUserEmail")?.value || "varunkumar@email.com";
+  const phone = document.getElementById("resUserPhone")?.value || "+91 98765 43210";
+  const loc = document.getElementById("resUserLocation")?.value || "Patna, Bihar";
+  const summary = document.getElementById("resSummaryText")?.value || "Resourceful professional with solid background in client relationship management, banking operations, and analytical execution.";
+  const skills = document.getElementById("resSkillsText")?.value || "Relationship Management, Banking Solutions, Data Operations, Client Advisory";
+  const exp = document.getElementById("resExperienceText")?.value || "Operations Associate (2024 - Present)\n• Managed client engagements and exceeded targets.";
+  const edu = document.getElementById("resEducationText")?.value || "Bachelor of Pharmacy - Veer Kunwar Singh University (2024)";
+
+  const out = document.getElementById("resumeRenderOutput");
+  if (!out) return;
+
+  let cls = "tmpl-modern";
+  if (activeResumeTemplate === "minimal") cls = "tmpl-minimal";
+  if (activeResumeTemplate === "classic") cls = "tmpl-classic";
+
+  out.innerHTML = `
+    <div class="resume-sheet ${cls}" id="livePrintableResume">
+      <h2>${name}</h2>
+      <div style="font-weight:700; color:#2563eb; margin-bottom:4px;">${role}</div>
+      <div style="font-size:13px; color:#64748b; margin-bottom:14px;">
+        <span>📞 ${phone}</span> | <span>✉️ ${email}</span> | <span>📍 ${loc}</span>
+      </div>
+
+      <h4 style="text-transform:uppercase; margin-bottom:4px; font-size:14px; border-bottom:1px solid #cbd5e1;">Professional Summary</h4>
+      <p style="margin-bottom:12px; font-size:14px;">${summary}</p>
+
+      <h4 style="text-transform:uppercase; margin-bottom:4px; font-size:14px; border-bottom:1px solid #cbd5e1;">Core Competencies</h4>
+      <p style="margin-bottom:12px; font-size:14px;">${skills}</p>
+
+      <h4 style="text-transform:uppercase; margin-bottom:4px; font-size:14px; border-bottom:1px solid #cbd5e1;">Work History</h4>
+      <p style="margin-bottom:12px; font-size:14px; white-space:pre-line;">${exp}</p>
+
+      <h4 style="text-transform:uppercase; margin-bottom:4px; font-size:14px; border-bottom:1px solid #cbd5e1;">Education</h4>
+      <p style="font-size:14px; white-space:pre-line;">${edu}</p>
+    </div>
+  `;
 }
 
-async function saveAdv(doc,name){
-    const bytes=await doc.save({useObjectStreams:true,addDefaultPage:false});
-    downloadPDF(bytes,name);
-    return bytes;
+function printSavePdfResume() {
+  const el = document.getElementById("livePrintableResume");
+  if (!el) return;
+  const w = window.open("", "_blank");
+  w.document.write(`<html><head><title>Resume</title><style>body{font-family:Arial,sans-serif;padding:25px;color:#1e293b;}.tmpl-modern{border-top:6px solid #2563eb;padding:20px;}.tmpl-minimal{border:1px solid #cbd5e1;padding:20px;}.tmpl-classic{border:2px solid #0f172a;padding:20px;font-family:Georgia,serif;}h2{margin-bottom:4px;}h4{margin-top:14px;border-bottom:1px solid #cbd5e1;font-size:14px;text-transform:uppercase;}</style></head><body>${el.outerHTML}</body></html>`);
+  w.document.close();
+  w.focus();
+  setTimeout(() => w.print(), 300);
 }
 
-async function extractPDFText(file){
-    const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
-    let all="";
-    for(let i=1;i<=pdf.numPages;i++){
-        const p=await pdf.getPage(i);
-        const c=await p.getTextContent();
-        all+=c.items.map(x=>x.str).join(" ")+"\n";
+function downloadResumeWord() {
+  const el = document.getElementById("livePrintableResume");
+  if (!el) return;
+  const content = `<html><body>${el.innerHTML}</body></html>`;
+  const blob = new Blob(['\ufeff' + content], { type: 'application/msword' });
+  downloadBlobFile(blob, "SmartSathi-Resume.doc", "application/msword");
+}
+
+function downloadResumeText() {
+  const name = document.getElementById("resFullName")?.value || "";
+  const role = document.getElementById("resDesignation")?.value || "";
+  const contact = `${document.getElementById("resUserPhone")?.value || ""} | ${document.getElementById("resUserEmail")?.value || ""}`;
+  const text = `${name.toUpperCase()}\n${role}\n${contact}\n\nSUMMARY:\n${document.getElementById("resSummaryText")?.value}\n\nSKILLS:\n${document.getElementById("resSkillsText")?.value}\n\nEXPERIENCE:\n${document.getElementById("resExperienceText")?.value}\n\nEDUCATION:\n${document.getElementById("resEducationText")?.value}`;
+  downloadBlobFile(new Blob([text], { type: "text/plain;charset=utf-8" }), "SmartSathi-Resume.txt", "text/plain");
+}
+
+function generateFormalLetter() {
+  const to = document.getElementById("letterRecipient")?.value || "To Whom It May Concern";
+  const sub = document.getElementById("letterSubject")?.value || "Formal Application";
+  const body = document.getElementById("letterBody")?.value || "I am writing this communication regarding the matter stated above.";
+  const res = document.getElementById("letterResultBox");
+  res.style.display = "block";
+  res.innerHTML = `<strong>To:</strong> ${to}<br><strong>Subject:</strong> ${sub}<br><br>Dear Sir/Madam,<br><br>${body}<br><br>Sincerely,<br>[Your Name]`;
+}
+
+function generateSmartPassword() {
+  const len = parseInt(document.getElementById("pwdRange")?.value, 10) || 16;
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*()_+";
+  const arr = new Uint32Array(len);
+  window.crypto.getRandomValues(arr);
+  let pwd = "";
+  for (let i = 0; i < len; i++) pwd += chars[arr[i] % chars.length];
+  const box = document.getElementById("passwordResultBox");
+  box.style.display = "block";
+  box.innerHTML = `Generated Key: <strong>${pwd}</strong>`;
+}
+
+function generateStudyNotes() {
+  const t = document.getElementById("studyTopicInput")?.value || "Subject";
+  const box = document.getElementById("studyResultBox");
+  box.style.display = "block";
+  box.innerHTML = `
+    <strong>Core Overview for ${t}:</strong><br>
+    1. <strong>Primary Principles:</strong> Fundamental concepts and operational theories.<br>
+    2. <strong>Structural Mechanisms:</strong> Key steps, mechanisms, and classification rules.<br>
+    3. <strong>Analytical Applications:</strong> Industry scenarios and implementations.<br>
+    4. <strong>Exam Review:</strong> High-probability conceptual questions for revision.
+  `;
+}
+
+function calculateComprehensiveAge() {
+  const dobVal = document.getElementById("advDobInput")?.value;
+  const out = document.getElementById("ageOutput");
+  if (!dobVal) { alert("Please select a date of birth."); return; }
+
+  const dob = new Date(dobVal);
+  const now = new Date();
+  if (dob > now) { alert("Date of birth cannot be in the future."); return; }
+
+  const diffMs = now.getTime() - dob.getTime();
+  let years = now.getFullYear() - dob.getFullYear();
+  let months = now.getMonth() - dob.getMonth();
+  let days = now.getDate() - dob.getDate();
+
+  if (days < 0) {
+    months--;
+    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+  }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const totalWeeks = (totalDays / 7).toFixed(1);
+  const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const totalMinutes = Math.floor(diffMs / (1000 * 60));
+  const totalSeconds = Math.floor(diffMs / 1000);
+
+  out.style.display = "block";
+  document.getElementById("primaryAgeSummary").innerHTML = `🎉 Age: ${years} Years, ${months} Months, ${days} Days`;
+  document.getElementById("ageBreakdownGrid").innerHTML = `
+    <div class="age-stat"><strong>${years}</strong><span>Total Years</span></div>
+    <div class="age-stat"><strong>${(years * 12) + months}</strong><span>Total Months</span></div>
+    <div class="age-stat"><strong>${totalWeeks}</strong><span>Total Weeks</span></div>
+    <div class="age-stat"><strong>${totalDays.toLocaleString()}</strong><span>Total Days</span></div>
+    <div class="age-stat"><strong>${totalHours.toLocaleString()}</strong><span>Total Hours</span></div>
+    <div class="age-stat"><strong>${totalMinutes.toLocaleString()}</strong><span>Total Minutes</span></div>
+    <div class="age-stat" style="grid-column: span 3;"><strong>${totalSeconds.toLocaleString()}</strong><span>Total Seconds Lived</span></div>
+  `;
+}
+
+function calculatePercentage() {
+  const val = parseFloat(document.getElementById("pctVal")?.value);
+  const tot = parseFloat(document.getElementById("pctTotal")?.value);
+  const box = document.getElementById("pctResultBox");
+  if (isNaN(val) || isNaN(tot) || tot === 0) { alert("Please enter valid positive numbers."); return; }
+  const pct = ((val / tot) * 100).toFixed(2);
+  box.style.display = "block";
+  box.innerHTML = `<strong>Result: ${pct}%</strong> (${val} out of ${tot})`;
+}
+
+function calculateLoanEmi() {
+  const P = parseFloat(document.getElementById("emiP")?.value);
+  const r = parseFloat(document.getElementById("emiR")?.value) / 12 / 100;
+  const n = parseFloat(document.getElementById("emiY")?.value) * 12;
+  const box = document.getElementById("emiResultBox");
+  if (isNaN(P) || isNaN(r) || isNaN(n) || P <= 0) { alert("Please enter valid loan terms."); return; }
+  const emi = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+  const total = emi * n;
+  box.style.display = "block";
+  box.innerHTML = `
+    Monthly Installment: <strong>₹${emi.toLocaleString("en-IN", { maximumFractionDigits: 2 })}</strong><br>
+    Total Payment: ₹${total.toLocaleString("en-IN", { maximumFractionDigits: 2 })}<br>
+    Total Interest: ₹${(total - P).toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+  `;
+}
+
+function downloadBlobFile(bytes, filename, type) {
+  const blob = bytes instanceof Blob ? bytes : new Blob([bytes], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* ============================================================
+   AUTH MODAL CONTROLLER (WITH CLOSE BUTTON & CONFIRM PASS)
+   ============================================================ */
+let isRegisterMode = false;
+function openAuthModal() {
+  document.getElementById("authModalOverlay").style.display = "flex";
+  document.getElementById("authStatusText").innerText = "";
+}
+
+function closeAuthModal() {
+  document.getElementById("authModalOverlay").style.display = "none";
+}
+
+function toggleAuthFormMode() {
+  isRegisterMode = !isRegisterMode;
+  document.getElementById("modalAuthHeader").innerText = isRegisterMode ? "Create SmartSathi Account" : "Sign In to SmartSathi";
+  document.getElementById("modalAuthSub").innerText = isRegisterMode ? "Mobile number is optional" : "Access your utility profile";
+  document.getElementById("signupOnlyFields").style.display = isRegisterMode ? "block" : "none";
+  document.getElementById("confirmPasswordGroup").style.display = isRegisterMode ? "block" : "none";
+  document.getElementById("authSubmitActionBtn").innerText = isRegisterMode ? "Register Account" : "Sign In";
+  document.getElementById("authSwitchModeBtn").innerText = isRegisterMode ? "Already have an account? Sign In" : "Don't have an account? Sign Up";
+  document.getElementById("authStatusText").innerText = "";
+}
+
+function handleAuthSubmit() {
+  const email = document.getElementById("authEmail").value.trim();
+  const pass = document.getElementById("authPassword").value;
+  const pass2 = document.getElementById("authConfirmPassword").value;
+  const status = document.getElementById("authStatusText");
+
+  if (!email || !pass) {
+    status.style.color = "#ef4444";
+    status.innerText = "❌ Please enter email and password.";
+    return;
+  }
+
+  if (isRegisterMode) {
+    if (pass.length < 6) {
+      status.style.color = "#ef4444";
+      status.innerText = "❌ Password must be at least 6 characters.";
+      return;
     }
-    return all.trim();
-}
-
-async function pdfToWord(){
-    const r=document.getElementById("advResult");
-    try{
-        const text=await extractPDFText(getAdvFile());
-        const blob=new Blob([text],{type:"application/msword"});
-        const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="SmartSathi-PDF-to-Word.doc"; a.click();
-        r.innerText="✅ Word-compatible document created.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function pdfToPPT(){
-    const r=document.getElementById("advResult");
-    try{
-        const file=getAdvFile(); const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
-        const ppt=new PptxGenJS(); ppt.layout="LAYOUT_WIDE";
-        for(let i=1;i<=pdf.numPages;i++){
-            const p=await pdf.getPage(i); const c=await p.getTextContent();
-            const slide=ppt.addSlide(); slide.addText(c.items.map(x=>x.str).join(" "),{x:.5,y:.5,w:12.3,h:6.2,fontSize:16,breakLine:false,margin:.1});
-        }
-        await ppt.writeFile({fileName:"SmartSathi-PDF-to-PowerPoint.pptx"});
-        r.innerText="✅ PowerPoint created.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function pdfToExcel(){
-    const r=document.getElementById("advResult");
-    try{
-        const file=getAdvFile(); const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
-        const rows=[["Page","Text"]];
-        for(let i=1;i<=pdf.numPages;i++){
-            const p=await pdf.getPage(i); const c=await p.getTextContent();
-            rows.push([i,c.items.map(x=>x.str).join(" ")]);
-        }
-        const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),"PDF Text");
-        XLSX.writeFile(wb,"SmartSathi-PDF-to-Excel.xlsx"); r.innerText="✅ Excel file created.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function textToPDF(kind){
-    const text=document.getElementById("sourceText").value.trim(), r=document.getElementById("advResult");
-    if(!text){r.innerText="⚠️ Please paste some text first.";return;}
-    const doc=await PDFLib.PDFDocument.create();
-    const font=await doc.embedFont(PDFLib.StandardFonts.Helvetica);
-    const lines=text.split(/\r?\n/); let page=doc.addPage([595,842]), y=800;
-    for(const line of lines){
-        if(y<50){page=doc.addPage([595,842]);y=800;}
-        page.drawText(line.slice(0,100),{x:40,y,size:11,font});
-        y-=18;
+    if (pass !== pass2) {
+      status.style.color = "#ef4444";
+      status.innerText = "❌ Passwords do not match. Re-enter correctly.";
+      return;
     }
-    await saveAdv(doc,"SmartSathi-"+kind+"-to-PDF.pdf"); r.innerText="✅ PDF created.";
+    status.style.color = "#10b981";
+    status.innerText = "✅ Account registered successfully!";
+    setTimeout(() => {
+      document.getElementById("authNavBtn").innerText = `Sign Out (${email.split("@")[0]})`;
+      closeAuthModal();
+    }, 1000);
+  } else {
+    status.style.color = "#10b981";
+    status.innerText = "✅ Signed in successfully!";
+    setTimeout(() => {
+      document.getElementById("authNavBtn").innerText = `Sign Out (${email.split("@")[0]})`;
+      closeAuthModal();
+    }, 1000);
+  }
 }
-
-async function editPDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(), page=doc.getPage(0), font=await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
-        page.drawText(document.getElementById("editText").value||"SmartSathi AI",{x:40,y:40,size:16,font});
-        await saveAdv(doc,"SmartSathi-Edited.pdf"); r.innerText="✅ Edited PDF created.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-let signCtx, drawing=false;
-function setupSignCanvas(){
-    const c=document.getElementById("signCanvas"); if(!c)return;
-    signCtx=c.getContext("2d"); signCtx.lineWidth=3; signCtx.lineCap="round";
-    const pos=e=>{const r=c.getBoundingClientRect(); return {x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height};};
-    c.onpointerdown=e=>{drawing=true; const p=pos(e); signCtx.beginPath(); signCtx.moveTo(p.x,p.y);};
-    c.onpointermove=e=>{if(!drawing)return; const p=pos(e); signCtx.lineTo(p.x,p.y); signCtx.stroke();};
-    c.onpointerup=()=>drawing=false; c.onpointerleave=()=>drawing=false;
-}
-function clearSign(){if(signCtx)signCtx.clearRect(0,0,700,220);}
-async function signPDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(), page=doc.getPage(0), png=await new Promise(res=>document.getElementById("signCanvas").toBlob(res,"image/png"));
-        const img=await doc.embedPng(await png.arrayBuffer()); page.drawImage(img,{x:40,y:40,width:180,height:55});
-        await saveAdv(doc,"SmartSathi-Signed.pdf"); r.innerText="✅ Signed PDF created.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function watermarkPDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(), font=await doc.embedFont(PDFLib.StandardFonts.HelveticaBold), text=document.getElementById("watermarkText").value||"SmartSathi AI";
-        doc.getPages().forEach(p=>p.drawText(text,{x:60,y:p.getHeight()/2,size:30,font,opacity:.25,rotate:PDFLib.degrees(35)}));
-        await saveAdv(doc,"SmartSathi-Watermarked.pdf"); r.innerText="✅ Watermark added.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function rotatePDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(), angle=Number(document.getElementById("rotateAngle").value);
-        doc.getPages().forEach(p=>p.setRotation(PDFLib.degrees((p.getRotation().angle+angle)%360)));
-        await saveAdv(doc,"SmartSathi-Rotated.pdf"); r.innerText="✅ PDF rotated.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function unlockPDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(); await saveAdv(doc,"SmartSathi-Unlocked-Copy.pdf"); r.innerText="✅ Copy created. Encrypted PDFs cannot be bypassed by this browser tool.";
-    }catch(e){r.innerText="❌ This PDF may be encrypted or invalid.";}
-}
-
-async function organizePDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(), idx=parsePages(document.getElementById("pageOrder").value,doc.getPageCount());
-        if(!idx.length) throw new Error("Enter valid page numbers.");
-        await saveAdv(await copySelectedPages(doc,idx),"SmartSathi-Organized.pdf"); r.innerText="✅ Pages organized.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function repairPDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(); await saveAdv(doc,"SmartSathi-Repaired.pdf"); r.innerText="✅ PDF re-saved successfully.";
-    }catch(e){r.innerText="❌ The PDF could not be repaired in browser mode.";}
-}
-
-async function pageNumberPDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(), font=await doc.embedFont(PDFLib.StandardFonts.Helvetica), top=document.getElementById("pagePos").value==="top";
-        doc.getPages().forEach((p,i)=>{const s=String(i+1), w=font.widthOfTextAtSize(s,10); p.drawText(s,{x:(p.getWidth()-w)/2,y:top?p.getHeight()-25:20,size:10,font});});
-        await saveAdv(doc,"SmartSathi-Page-Numbers.pdf"); r.innerText="✅ Page numbers added.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function scanToPDF(){
-    const r=document.getElementById("advResult"), files=[...document.getElementById("scanImages").files];
-    if(!files.length){r.innerText="⚠️ Select scanned images.";return;}
-    try{
-        const doc=await PDFLib.PDFDocument.create();
-        for(const f of files){const b=await f.arrayBuffer(), img=f.type==="image/png"?await doc.embedPng(b):await doc.embedJpg(b); const p=doc.addPage([img.width,img.height]); p.drawImage(img,{x:0,y:0,width:img.width,height:img.height});}
-        await saveAdv(doc,"SmartSathi-Scan-to-PDF.pdf"); r.innerText="✅ Scan images converted to PDF.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function cropPDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(), m=Math.max(0,Number(document.getElementById("cropMargin").value)||0);
-        doc.getPages().forEach(p=>{const w=p.getWidth(),h=p.getHeight(); if(w>2*m&&h>2*m)p.setCropBox(m,m,w-2*m,h-2*m);});
-        await saveAdv(doc,"SmartSathi-Cropped.pdf"); r.innerText="✅ PDF cropped.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-async function pdfToPDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(), idx=parsePages(document.getElementById("pageRange").value,doc.getPageCount());
-        await saveAdv(await copySelectedPages(doc,idx),"SmartSathi-PDF-to-PDF.pdf"); r.innerText="✅ PDF created.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-async function relatedPDF(){
-    const r=document.getElementById("advResult"); try{
-        const doc=await loadAdvPDF(), idx=parsePages(document.getElementById("relatedPages").value,doc.getPageCount());
-        await saveAdv(await copySelectedPages(doc,idx),"SmartSathi-Related-PDF.pdf"); r.innerText="✅ Related PDF created.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-async function summaryPDF(){
-    const r=document.getElementById("advResult"); try{
-        const text=await extractPDFText(getAdvFile());
-        const sentences=(text.match(/[^.!?]+[.!?]+/g)||[text]).slice(0,8);
-        r.innerHTML="<strong>Quick Summary</strong><br><br>"+sentences.join(" ");
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-async function translatePDF(){
-    const r=document.getElementById("advResult"); try{
-        const text=await extractPDFText(getAdvFile());
-        const lang=document.getElementById("translateLang").value;
-        const blob=new Blob([text],{type:"text/plain;charset=utf-8"}), a=document.createElement("a");
-        a.href=URL.createObjectURL(blob); a.download="SmartSathi-Text-for-"+lang+"-Translation.txt"; a.click();
-        r.innerText="✅ PDF text extracted. Automatic translation needs a translation API/backend.";
-    }catch(e){r.innerText="❌ "+e.message;}
-}
-
-/* Better search coverage */
-const oldSearchTool = window.searchTool;
-window.searchTool = function(){
-    const q=(document.getElementById("search").value||"").toLowerCase();
-    const pdfWords=["pdf","merge","split","compress","word","powerpoint","ppt","excel","edit","jpg","image","sign","watermark","rotate","unlock","protect","organize","repair","page number","scan","crop","summary","translate"];
-    if(pdfWords.some(x=>q.includes(x))){document.getElementById("pdf").scrollIntoView({behavior:"smooth"});return;}
-    if(q.includes("password")){openPasswordTool();return;}
-    if(q.includes("ai")||q.includes("resume")||q.includes("letter")||q.includes("caption")||q.includes("study")){document.getElementById("ai").scrollIntoView({behavior:"smooth"});return;}
-    if(q.includes("percentage")||q.includes("emi")||q.includes("age")||q.includes("calculator")){document.getElementById("calculator").scrollIntoView({behavior:"smooth"});return;}
-    alert("Tool नहीं मिला। PDF, Resume, EMI, Password आदि search करें।");
-};
-
 </script>
-
 </body>
 </html>

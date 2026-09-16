@@ -837,7 +837,72 @@ footer {
     </div>
 
     <input type="password" id="authPassword" placeholder="Password (Min 6 characters)">
-    
+    <!-- Forgot Password -->
+<div style="text-align:right; margin-top:8px; margin-bottom:12px;">
+  <a href="javascript:void(0)"
+     onclick="openForgotPassword()"
+     style="color:var(--primary); font-size:13px; text-decoration:none;">
+    Forgot Password?
+  </a>
+</div>
+
+<div id="forgotPasswordBox"
+     style="display:none; margin:12px 0; padding:14px; border:1px solid var(--surface-border); border-radius:10px;">
+
+  <div style="font-weight:600; margin-bottom:10px;">
+    Reset Password
+  </div>
+
+  <div style="display:flex; gap:8px; margin-bottom:10px;">
+    <button type="button" id="resetEmailTab"
+            class="primary"
+            onclick="showResetEmail()">
+      Email
+    </button>
+
+    <button type="button"
+            onclick="showResetMobile()"
+            style="background:transparent; border:1px solid var(--surface-border); border-radius:8px; padding:8px 12px;">
+      Mobile Number
+    </button>
+  </div>
+
+  <div id="resetEmailArea">
+    <input type="email"
+           id="resetEmail"
+           placeholder="Enter your registered Email Address"
+           style="width:100%; box-sizing:border-box;">
+
+    <button type="button"
+            class="primary"
+            onclick="sendPasswordReset()"
+            style="width:100%; margin-top:10px;">
+      Send Reset Link
+    </button>
+  </div>
+
+  <div id="resetMobileArea" style="display:none;">
+    <input type="tel"
+           id="resetMobile"
+           placeholder="Enter registered Mobile Number"
+           maxlength="10"
+           style="width:100%; box-sizing:border-box;">
+
+    <button type="button"
+            class="primary"
+            onclick="sendMobileReset()"
+            style="width:100%; margin-top:10px;">
+      Send OTP
+    </button>
+
+    <div style="font-size:12px; color:var(--text-muted); margin-top:8px;">
+      Mobile OTP reset के लिए Firebase Phone Authentication भी enable/configure करना होगा।
+    </div>
+  </div>
+
+  <div id="resetStatus"
+       style="margin-top:10px; font-size:13px;"></div>
+</div>
     <div id="confirmPasswordGroup" style="display:none;">
       <input type="password" id="authConfirmPassword" placeholder="Confirm Password">
     </div>
@@ -1996,6 +2061,293 @@ function handleAuthSubmit() {
     }, 1000);
   }
 }
+window.firebaseConfig = {
+  apiKey: "AIzaSyAAwXPaBnVj7AwcJZkUq83-SaafpMZHt6Q",
+  authDomain: "smartsathi-ai.firebaseapp.com",
+  projectId: "smartsathi-ai",
+  storageBucket: "smartsathi-ai.firebasestorage.app",
+  messagingSenderId: "549234202981",
+  appId: "1:549234202981:web:84f03aaf53c71e62cf298c",
+  measurementId: "G-1ZVPGYNBMW"
+};
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+  // Firebase App
+  const app = initializeApp(window.firebaseConfig);
+
+  // Firebase Authentication
+  const auth = getAuth(app);
+window.openForgotPassword = function () {
+  const box = document.getElementById("forgotPasswordBox");
+  const email = document.getElementById("authEmail")?.value?.trim();
+
+  box.style.display = "block";
+
+  if (email) {
+    document.getElementById("resetEmail").value = email;
+  }
+
+  document.getElementById("resetStatus").innerText = "";
+};
+
+window.showResetEmail = function () {
+  document.getElementById("resetEmailArea").style.display = "block";
+  document.getElementById("resetMobileArea").style.display = "none";
+  document.getElementById("resetStatus").innerText = "";
+};
+
+window.showResetMobile = function () {
+  document.getElementById("resetEmailArea").style.display = "none";
+  document.getElementById("resetMobileArea").style.display = "block";
+  document.getElementById("resetStatus").innerText = "";
+};
+
+window.sendPasswordReset = async function () {
+  const email = document.getElementById("resetEmail").value.trim();
+  const status = document.getElementById("resetStatus");
+
+  if (!email) {
+    status.style.color = "#ef4444";
+    status.innerText = "❌ Please enter your registered email address.";
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+
+    status.style.color = "#10b981";
+    status.innerText =
+      "✅ Password reset link sent. Please check your email inbox/spam folder.";
+  } catch (error) {
+    status.style.color = "#ef4444";
+
+    if (error.code === "auth/user-not-found") {
+      status.innerText = "❌ This email is not registered.";
+    } else if (error.code === "auth/invalid-email") {
+      status.innerText = "❌ Please enter a valid email address.";
+    } else {
+      status.innerText = "❌ " + error.message;
+    }
+  }
+};
+
+window.sendMobileReset = function () {
+  const mobile = document.getElementById("resetMobile").value.trim();
+  const status = document.getElementById("resetStatus");
+
+  if (!mobile || mobile.length !== 10) {
+    status.style.color = "#ef4444";
+    status.innerText = "❌ Please enter a valid 10-digit mobile number.";
+    return;
+  }
+
+  status.style.color = "#f59e0b";
+  status.innerText =
+    "⚠️ Mobile OTP reset के लिए Firebase Phone Authentication setup करना जरूरी है.";
+};
+
+  // ================================
+  // FIREBASE LOGIN / SIGNUP
+  // ================================
+  window.handleAuthSubmit = async function () {
+
+    const email =
+      document.getElementById("authEmail").value.trim();
+
+    const password =
+      document.getElementById("authPassword").value;
+
+    const confirmPassword =
+      document.getElementById("authConfirmPassword").value;
+
+    const status =
+      document.getElementById("authStatusText");
+
+
+    if (!email || !password) {
+      status.style.color = "#ef4444";
+      status.innerText =
+        "❌ Please enter email and password.";
+      return;
+    }
+
+
+    // Check current mode
+    const registerMode =
+      document
+        .getElementById("authSubmitActionBtn")
+        .innerText
+        .toLowerCase()
+        .includes("register");
+
+
+    try {
+
+      // ================================
+      // SIGN UP
+      // ================================
+      if (registerMode) {
+
+        if (password.length < 6) {
+          status.style.color = "#ef4444";
+          status.innerText =
+            "❌ Password must be at least 6 characters.";
+          return;
+        }
+
+
+        if (password !== confirmPassword) {
+          status.style.color = "#ef4444";
+          status.innerText =
+            "❌ Passwords do not match.";
+          return;
+        }
+
+
+        status.style.color = "#2563eb";
+        status.innerText =
+          "Creating your account...";
+
+
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+
+        status.style.color = "#10b981";
+        status.innerText =
+          "✅ Account created successfully!";
+
+
+        setTimeout(() => {
+          closeAuthModal();
+        }, 1200);
+
+      }
+
+
+      // ================================
+      // SIGN IN
+      // ================================
+      else {
+
+        status.style.color = "#2563eb";
+        status.innerText =
+          "Signing you in...";
+
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+
+        status.style.color = "#10b981";
+        status.innerText =
+          "✅ Signed in successfully!";
+
+
+        setTimeout(() => {
+          closeAuthModal();
+        }, 1200);
+      }
+
+
+    } catch (error) {
+
+      console.error("Firebase Auth Error:", error);
+
+      status.style.color = "#ef4444";
+
+
+      if (error.code === "auth/email-already-in-use") {
+
+        status.innerText =
+          "❌ This email is already registered.";
+
+      } else if (error.code === "auth/invalid-email") {
+
+        status.innerText =
+          "❌ Please enter a valid email.";
+
+      } else if (
+        error.code === "auth/invalid-credential" ||
+        error.code === "auth/wrong-password" ||
+        error.code === "auth/user-not-found"
+      ) {
+
+        status.innerText =
+          "❌ Incorrect email or password.";
+
+      } else if (error.code === "auth/weak-password") {
+
+        status.innerText =
+          "❌ Password is too weak.";
+
+      } else {
+
+        status.innerText =
+          "❌ " + error.message;
+      }
+    }
+  };
+
+
+  // ================================
+  // LOGIN STATE
+  // ================================
+  onAuthStateChanged(auth, (user) => {
+
+    const navButton =
+      document.getElementById("authNavBtn");
+
+    if (!navButton) return;
+
+
+    if (user) {
+
+      const name =
+        user.email
+          ? user.email.split("@")[0]
+          : "Account";
+
+      navButton.innerText =
+        `Sign Out (${name})`;
+
+      navButton.onclick = async () => {
+
+        await signOut(auth);
+
+        navButton.innerText = "Sign In";
+      };
+
+    } else {
+
+      navButton.innerText = "Sign In";
+
+      navButton.onclick = () => {
+        openAuthModal();
+      };
+    }
+
+  });
+
 </script>
 </body>
 </html>

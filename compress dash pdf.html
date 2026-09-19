@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <title>Compress PDF Online - Free PDF Compressor | SmartSathi AI</title>
+
+  <meta name="description"
+        content="Compress PDF online for free with SmartSathi AI. Reduce PDF file size using quality and target-size options while keeping your document easy to share.">
+
+  <meta name="keywords"
+        content="compress PDF, PDF compressor, compress PDF online, reduce PDF size, free PDF compressor">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical"
+        href="https://smartsathi-ai.netlify.app/compress-pdf.html">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #222;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 15px 0 7px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .row > div {
+      flex: 1;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 22px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      text-align: center;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    .info {
+      margin-top: 35px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 600px) {
+      .row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .container {
+        margin: 15px auto;
+        padding: 10px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <a class="back" href="index.html">
+    ← Back to SmartSathi AI
+  </a>
+
+  <div class="card">
+
+    <h1>Compress PDF Online</h1>
+
+    <p class="subtitle">
+      Reduce PDF file size online with SmartSathi AI.
+    </p>
+
+    <label for="pdfFile">
+      Choose PDF File
+    </label>
+
+    <input
+      type="file"
+      id="pdfFile"
+      accept="application/pdf"
+    >
+
+    <div class="row">
+
+      <div>
+        <label for="targetSize">
+          Target File Size
+        </label>
+
+        <input
+          type="number"
+          id="targetSize"
+          min="1"
+          placeholder="Example: 500"
+        >
+      </div>
+
+      <div>
+        <label for="targetUnit">
+          Unit
+        </label>
+
+        <select id="targetUnit">
+          <option value="KB">KB</option>
+          <option value="MB">MB</option>
+        </select>
+      </div>
+
+    </div>
+
+    <label for="quality">
+      Quality
+    </label>
+
+    <select id="quality">
+      <option value="90">Higher Quality (90%)</option>
+      <option value="80" selected>Good Quality (80%)</option>
+      <option value="70">Medium Quality (70%)</option>
+      <option value="55">Low Quality (55%)</option>
+      <option value="custom">Customize</option>
+    </select>
+
+    <div id="customQualityBox" style="display:none;">
+
+      <label for="customQuality">
+        Custom Quality (%)
+      </label>
+
+      <input
+        type="number"
+        id="customQuality"
+        min="10"
+        max="100"
+        value="80"
+        placeholder="Enter 10-100"
+      >
+
+    </div>
+
+    <button onclick="compressPDF()">
+      Compress PDF
+    </button>
+
+    <div
+      class="status"
+      id="status"
+    >
+      Select a PDF file to begin.
+    </div>
+
+    <div class="info">
+
+      <h2>Free PDF Compressor</h2>
+
+      <p>
+        SmartSathi AI PDF Compressor helps reduce the size of
+        PDF documents for easier sharing, uploading and storage.
+      </p>
+
+      <h3>How to Compress a PDF</h3>
+
+      <ol>
+        <li>Select your PDF file.</li>
+        <li>Choose the target file size.</li>
+        <li>Select KB or MB.</li>
+        <li>Choose the required quality.</li>
+        <li>Click Compress PDF.</li>
+      </ol>
+
+      <p>
+        You can also customize the quality percentage according
+        to your requirement.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const qualitySelect = document.getElementById("quality");
+  const customQualityBox =
+    document.getElementById("customQualityBox");
+
+  qualitySelect.addEventListener("change", function () {
+    if (this.value === "custom") {
+      customQualityBox.style.display = "block";
+    } else {
+      customQualityBox.style.display = "none";
+    }
+  });
+
+  function compressPDF() {
+
+    const file =
+      document.getElementById("pdfFile").files[0];
+
+    const status =
+      document.getElementById("status");
+
+    if (!file) {
+      status.innerText =
+        "Please select a PDF file first.";
+      return;
+    }
+
+    status.innerText =
+      "PDF compressor is ready. Processing engine will be connected to this page next.";
+  }
+</script>
+
+</body>
+</html>

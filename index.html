@@ -1052,13 +1052,7 @@ document.addEventListener("click", e => {
    ============================================================ */
 let activeImgElement = null;
 let activeResumeTemplate = "modern";
-function togglePdfCustomQuality(value) {
-  const box = document.getElementById("pdfCustomQualityBox");
 
-  if (box) {
-    box.style.display = value === "custom" ? "block" : "none";
-  }
-}
 function openToolPage(toolId) {
   navigateTo('tool');
 
@@ -1861,14 +1855,409 @@ async function executePdfToJpg() {
 async function executeCompressPdf() {
   const file = document.getElementById("compressPdfInput")?.files[0];
   const st = document.getElementById("compressPdfStatus");
-  if (!file) { st.innerText = "❌ Select a PDF document."; return; }
+
+  if (!file) {
+    if (st) st.innerText = "❌ Select a PDF document.";
+    return;
+  }
+
   try {
-    st.innerText = "⏳ Compressing document...";
-    const doc = await PDFLib.PDFDocument.load(await file.arrayBuffer());
-    const bytes = await doc.save({ useObjectStreams: true, addDefaultPage: false });
-    downloadBlobFile(bytes, "SmartSathi-Compressed.pdf", "application/pdf");
-    st.innerText = "✅ PDF compressed successfully!";
-  } catch(e) { st.innerText = "❌ Error compressing PDF."; }
+    if (st) st.innerText = "⏳ Reading PDF...";
+
+    const targetInput =
+      parseFloat(document.getElementById("pdfTargetSize")?.value || "0");
+
+    const targetUnit =
+      document.getElementById("pdfTargetUnit")?.value || "MB";
+
+    const qualityPreset =
+      document.getElementById("pdfQualityPreset")?.value || "0.80";
+
+    const autoOptimization =
+      document.getElementById("pdfAutoOptimization")?.checked ?? true;
+
+    let targetBytes = 0;
+
+    if (targetInput > 0) {
+      targetBytes =
+        targetUnit === "KB"
+          ? targetInput * 1024
+          : targetInput * 1024 * 1024;
+    }
+
+    let maxQuality = 0.80;
+
+    if (qualityPreset === "custom") {
+      const custom =
+        parseFloat(
+          document.getElementById("pdfCustomQualityNumber")?.value || "80"
+        );
+
+      maxQuality =
+        Math.min(100, Math.max(10, custom)) / 100;
+    } else {
+      maxQuality = parseFloat(qualityPreset);
+    }
+
+    const originalBytes = await file.arrayBuffer();
+
+    /*
+     * Load PDF with PDF.js.
+     * Pages are rendered to JPEG images and rebuilt into a new PDF.
+     * This allows real quality/target-size compression.
+     */
+    if (typeof pdfjsLib === "undefined") {
+      throw new Error("PDF.js is not loaded.");
+    }
+
+    if (typeof PDFLib === "undefined") {
+      throw new Error("pdf-lib is not loaded.");
+    }
+
+    const loadingTask =
+      pdfjsLib.getDocument({
+        data: originalBytes
+      });
+
+    const sourcePdf =
+      await loadingTask.promise;
+
+    const pageCount =
+      sourcePdf.numPages;
+
+    if (pageCount === 0) {
+      throw new Error("PDF has no pages.");
+    }
+
+    /*
+     * Render PDF pages into JPEG data.
+     */
+    async function buildCompressedPdf(scale, quality) {
+
+      const outputPdf =
+        await PDFLib.PDFDocument.create();
+
+      for (let pageNumber = 1; pageNumber <= pageCount; pageNumber++) {
+
+        if (st) {
+          st.innerText =
+            "⏳ Compressing page " +
+            pageNumber +
+            " of " +
+            pageCount +
+            "...";
+        }
+
+        const page =
+          await sourcePdf.getPage(pageNumber);
+
+        const viewport =
+          page.getViewport({
+            scale: scale
+          });
+
+        const canvas =
+          document.createElement("canvas");
+
+        canvas.width =
+          Math.max(1, Math.floor(viewport.width));
+
+        canvas.height =
+          Math.max(1, Math.floor(viewport.height));
+
+        const context =
+          canvas.getContext("2d", {
+            alpha: false
+          });
+
+        context.fillStyle = "#ffffff";
+        context.fillRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise;
+
+        const dataUrl =
+          canvas.toDataURL(
+            "image/jpeg",
+            quality
+          );
+
+        const base64 =
+          dataUrl.split(",")[1];
+
+        const binary =
+          atob(base64);
+
+        const imageBytes =
+          new Uint8Array(binary.length);
+
+        for (let i = 0; i < binary.length; i++) {
+          imageBytes[i] =
+            binary.charCodeAt(i);
+        }
+
+        const jpgImage =
+          await outputPdf.embedJpg(imageBytes);
+
+        /*
+         * Keep the PDF page size proportional
+         * to the rendered image.
+         */
+        const pdfWidth =
+          viewport.width / scale;
+
+        const pdfHeight =
+          viewport.height / scale;
+
+        const newPage =
+          outputPdf.addPage([
+            pdfWidth,
+            pdfHeight
+          ]);
+
+        newPage.drawImage(jpgImage, {
+          x: 0,
+          y: 0,
+          width: pdfWidth,
+          height: pdfHeight
+        });
+
+        canvas.width = 1;
+        canvas.height = 1;
+      }
+
+      const bytes =
+        await outputPdf.save({
+          useObjectStreams: true,
+          addDefaultPage: false
+        });
+
+      return bytes;
+    }
+
+    /*
+     * If Auto Optimization is ON:
+     * try different resolutions and JPEG qualities
+     * until the file reaches the requested target.
+     */
+    let bestBytes = null;
+    let bestQuality = maxQuality;
+    let bestScale = 1;
+
+    const scales = autoOptimization
+      ? [1.50, 1.25, 1.10, 1.00, 0.90, 0.80, 0.70, 0.60, 0.50, 0.40]
+      : [1.00];
+
+    /*
+     * No target size:
+     * simply use the selected quality.
+     */
+    if (!targetBytes) {
+
+      bestBytes =
+        await buildCompressedPdf(
+          1.00,
+          maxQuality
+        );
+
+      bestQuality = maxQuality;
+      bestScale = 1.00;
+
+    } else {
+
+      /*
+       * Try every scale.
+       * For each scale, find the highest quality
+       * that stays at or below the target.
+       */
+      for (const scale of scales) {
+
+        let low = 0.10;
+        let high = maxQuality;
+        let candidateUnderTarget = null;
+        let candidateQuality = 0;
+
+        /*
+         * First check the maximum requested quality.
+         */
+        const maxBytes =
+          await buildCompressedPdf(
+            scale,
+            maxQuality
+          );
+
+        if (maxBytes.length <= targetBytes) {
+
+          candidateUnderTarget = maxBytes;
+          candidateQuality = maxQuality;
+
+          /*
+           * Binary search for the highest quality
+           * that remains below the target.
+           */
+          for (let i = 0; i < 7; i++) {
+
+            const middle =
+              (low + high) / 2;
+
+            const testBytes =
+              await buildCompressedPdf(
+                scale,
+                middle
+              );
+
+            if (testBytes.length <= targetBytes) {
+
+              candidateUnderTarget =
+                testBytes;
+
+              candidateQuality =
+                middle;
+
+              low = middle;
+
+            } else {
+
+              high = middle;
+            }
+          }
+
+          bestBytes =
+            candidateUnderTarget;
+
+          bestQuality =
+            candidateQuality;
+
+          bestScale =
+            scale;
+
+          break;
+        }
+
+        /*
+         * If even the lowest quality at this scale
+         * is still larger than the target, move to
+         * a lower resolution.
+         */
+        const minimumBytes =
+          await buildCompressedPdf(
+            scale,
+            0.10
+          );
+
+        if (minimumBytes.length <= targetBytes) {
+
+          candidateUnderTarget =
+            minimumBytes;
+
+          candidateQuality =
+            0.10;
+
+          bestBytes =
+            candidateUnderTarget;
+
+          bestQuality =
+            candidateQuality;
+
+          bestScale =
+            scale;
+
+          break;
+        }
+
+        /*
+         * Keep the smallest result so far.
+         */
+        if (
+          !bestBytes ||
+          minimumBytes.length < bestBytes.length
+        ) {
+          bestBytes =
+            minimumBytes;
+
+          bestQuality =
+            0.10;
+
+          bestScale =
+            scale;
+        }
+      }
+    }
+
+    if (!bestBytes) {
+      throw new Error(
+        "Unable to create compressed PDF."
+      );
+    }
+
+    const finalSizeKB =
+      bestBytes.length / 1024;
+
+    const originalSizeKB =
+      file.size / 1024;
+
+    const reduction =
+      Math.max(
+        0,
+        (1 - bestBytes.length / file.size) * 100
+      );
+
+    downloadBlobFile(
+      bestBytes,
+      "SmartSathi-Compressed.pdf",
+      "application/pdf"
+    );
+
+    if (targetBytes && bestBytes.length > targetBytes) {
+
+      if (st) {
+        st.innerText =
+          "⚠️ Target was very small. " +
+          "Smallest practical result: " +
+          finalSizeKB.toFixed(1) +
+          " KB. " +
+          "Original: " +
+          originalSizeKB.toFixed(1) +
+          " KB.";
+      }
+
+    } else {
+
+      if (st) {
+        st.innerText =
+          "✅ PDF compressed successfully! " +
+          "Original: " +
+          originalSizeKB.toFixed(1) +
+          " KB → " +
+          "Compressed: " +
+          finalSizeKB.toFixed(1) +
+          " KB " +
+          "(" +
+          reduction.toFixed(1) +
+          "% smaller). " +
+          "Quality: " +
+          Math.round(bestQuality * 100) +
+          "%.";
+      }
+    }
+
+  } catch (e) {
+
+    console.error("PDF compression error:", e);
+
+    if (st) {
+      st.innerText =
+        "❌ PDF compression failed: " +
+        (e.message || "Unknown error.");
+    }
+  }
 }
 
 let sigCtx = null, isDrawingSig = false;

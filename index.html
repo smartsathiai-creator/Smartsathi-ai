@@ -1052,7 +1052,13 @@ document.addEventListener("click", e => {
    ============================================================ */
 let activeImgElement = null;
 let activeResumeTemplate = "modern";
+function togglePdfCustomQuality(value) {
+  const box = document.getElementById("pdfCustomQualityBox");
 
+  if (box) {
+    box.style.display = value === "custom" ? "block" : "none";
+  }
+}
 function openToolPage(toolId) {
   navigateTo('tool');
 
@@ -1216,19 +1222,131 @@ function openToolPage(toolId) {
       <p>Uses PDF.js to render document vectors onto an HTML5 canvas at 1.5x resolution for clean text clarity.</p>
     `;
   } else if (toolId === "compressPdf") {
-    category.innerText = "PDF Studio";
-    title.innerText = "🗜️ PDF Stream Compressor";
-    subtitle.innerText = "Optimize PDF stream structures to compress document size.";
-    form.innerHTML = `
-      <label>Choose PDF</label>
-      <input type="file" id="compressPdfInput" accept="application/pdf">
-      <button class="primary" onclick="executeCompressPdf()">Compress PDF</button>
-      <div class="result" id="compressPdfStatus">Select a PDF to compress.</div>
-    `;
-    guide.innerHTML = `
-      <h4>📘 Technical Guide:</h4>
-      <p>Re-encodes PDF dictionaries and compresses cross-reference tables directly in your browser.</p>
-    `;
+  category.innerText = "PDF Studio";
+  title.innerText = "🗜️ Advanced PDF Compressor";
+  subtitle.innerText =
+    "Compress your PDF using target size and quality controls.";
+
+  form.innerHTML = `
+    <label>Choose PDF File</label>
+    <input
+      type="file"
+      id="compressPdfInput"
+      accept="application/pdf"
+    >
+
+    <div class="flex-row">
+      <div>
+        <label>Target File Size</label>
+        <input
+          type="number"
+          id="pdfTargetSize"
+          placeholder="e.g. 500"
+          min="1"
+          step="0.1"
+        >
+      </div>
+
+      <div>
+        <label>Unit</label>
+        <select id="pdfTargetUnit">
+          <option value="KB">KB</option>
+          <option value="MB" selected>MB</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Quality</label>
+    <select
+      id="pdfQualityPreset"
+      onchange="togglePdfCustomQuality(this.value)"
+    >
+      <option value="0.90">Higher Quality (90%)</option>
+      <option value="0.80" selected>Good Quality (80%)</option>
+      <option value="0.70">Medium Quality (70%)</option>
+      <option value="0.55">Low Quality (55%)</option>
+      <option value="custom">Customize</option>
+    </select>
+
+    <div
+      id="pdfCustomQualityBox"
+      style="display:none;margin-bottom:14px;"
+    >
+      <label>
+        Custom Quality:
+        <span id="pdfCustomQualityText">80%</span>
+      </label>
+
+      <input
+  type="number"
+  id="pdfCustomQualityNumber"
+  min="10"
+  max="100"
+  value="80"
+  placeholder="Enter 10-100"
+  oninput="
+    let value = Math.min(100, Math.max(10, Number(this.value) || 10));
+    document.getElementById('pdfCustomQualityText').innerText =
+      value + '%';
+  "
+>
+    </div>
+
+    <label>Output Format</label>
+    <select id="pdfOutputFormat">
+      <option value="pdf" selected>PDF</option>
+    </select>
+
+    <label
+      style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        font-weight:normal;
+        cursor:pointer;
+        margin-top:10px;
+      "
+    >
+      <input
+        type="checkbox"
+        id="pdfAutoOptimization"
+        checked
+        style="width:auto;margin:0;"
+      >
+      Auto Optimization
+    </label>
+
+    <button
+      class="primary"
+      onclick="executeCompressPdf()"
+    >
+      🗜️ Compress PDF
+    </button>
+
+    <div
+      class="result"
+      id="compressPdfStatus"
+    >
+      Select a PDF to begin.
+    </div>
+  `;
+
+  guide.innerHTML = `
+    <h4>How to Use:</h4>
+    <ul>
+      <li>Select your PDF file.</li>
+      <li>Enter the target file size.</li>
+      <li>Select KB or MB.</li>
+      <li>Select your required quality.</li>
+      <li>Use Customize for your own quality percentage.</li>
+      <li>Click Compress PDF.</li>
+    </ul>
+
+    <h4>Privacy:</h4>
+    <p>
+      PDF processing is performed in your browser.
+    </p>
+  `;
   } else if (toolId === "signPdf") {
     category.innerText = "PDF Studio";
     title.innerText = "🖊️ Sign PDF Document";

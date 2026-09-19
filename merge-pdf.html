@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Merge PDF Online - Free PDF Merger | SmartSathi AI</title>
+
+  <meta name="description"
+    content="Merge multiple PDF files into one PDF online for free with SmartSathi AI. Combine PDF documents quickly and easily.">
+
+  <meta name="keywords"
+    content="merge PDF, merge PDF online, combine PDF, PDF merger, join PDF, free PDF merger">
+
+  <link rel="canonical"
+    href="https://smartsathi-ai.netlify.app/merge-pdf.html">
+
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #222;
+      transition: 0.3s;
+    }
+
+    body.dark {
+      background: #111827;
+      color: #f3f4f6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 35px auto;
+      padding: 15px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .back {
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    body.dark .back {
+      color: #60a5fa;
+    }
+
+    .theme-btn {
+      width: auto;
+      margin: 0;
+      padding: 9px 14px;
+      background: #111827;
+      color: white;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    body.dark .theme-btn {
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+    }
+
+    body.dark .card {
+      background: #1f2937;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 28px;
+    }
+
+    body.dark .subtitle {
+      color: #cbd5e1;
+    }
+
+    .drop-area {
+      border: 2px dashed #2563eb;
+      border-radius: 12px;
+      padding: 35px 20px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .drop-area:hover {
+      background: #eff6ff;
+    }
+
+    body.dark .drop-area:hover {
+      background: #243247;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .file-list {
+      margin-top: 20px;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      background: #f1f5f9;
+      border-radius: 8px;
+    }
+
+    body.dark .file-item {
+      background: #374151;
+    }
+
+    .file-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .remove-btn {
+      width: auto;
+      margin: 0;
+      padding: 7px 12px;
+      background: #dc2626;
+      font-size: 13px;
+    }
+
+    .primary {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .primary:hover {
+      opacity: 0.9;
+    }
+
+    .clear-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    body.dark .clear-btn {
+      color: white;
+      border-color: #64748b;
+    }
+
+    .status {
+      margin-top: 18px;
+      padding: 12px;
+      text-align: center;
+      border-radius: 8px;
+      background: #f1f5f9;
+    }
+
+    body.dark .status {
+      background: #374151;
+    }
+
+    .info {
+      margin-top: 35px;
+      line-height: 1.7;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    body.dark footer {
+      color: #cbd5e1;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="topbar">
+    <a class="back" href="index.html">
+      ← Back to SmartSathi AI
+    </a>
+
+    <button class="theme-btn" onclick="toggleTheme()" id="themeButton">
+      🌙 Dark
+    </button>
+  </div>
+
+  <div class="card">
+
+    <h1>Merge PDF Online</h1>
+
+    <p class="subtitle">
+      Combine multiple PDF files into one PDF quickly and easily.
+    </p>
+
+    <div class="drop-area" onclick="document.getElementById('pdfFiles').click()">
+      <strong>📄 Select PDF Files</strong>
+      <br>
+      <span>Choose multiple PDF files to merge</span>
+
+      <input
+        type="file"
+        id="pdfFiles"
+        accept="application/pdf"
+        multiple
+        onchange="handleFiles(this.files)"
+      >
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <button class="primary" onclick="mergePDFs()">
+      🔗 Merge PDF
+    </button>
+
+    <button class="clear-btn" onclick="clearFiles()">
+      Clear Files
+    </button>
+
+    <div class="status" id="status">
+      Select two or more PDF files to begin.
+    </div>
+
+    <div class="info">
+
+      <h2>Free PDF Merger</h2>
+
+      <p>
+        SmartSathi AI Merge PDF allows you to combine multiple PDF
+        documents into a single PDF file directly in your browser.
+      </p>
+
+      <h3>How to Merge PDF Files</h3>
+
+      <ol>
+        <li>Select multiple PDF files.</li>
+        <li>Check the selected files in the list.</li>
+        <li>Click the Merge PDF button.</li>
+        <li>Your combined PDF will be downloaded automatically.</li>
+      </ol>
+
+      <h3>Privacy</h3>
+
+      <p>
+        PDF processing is performed in your browser.
+        Your selected files are not uploaded to a server by this page.
+      </p>
+
+    </div>
+
+  </div>
+
+  <footer>
+    © 2026 SmartSathi AI. All rights reserved.
+  </footer>
+
+</div>
+
+<script>
+  let selectedFiles = [];
+
+  function handleFiles(files) {
+    selectedFiles = Array.from(files);
+    displayFiles();
+  }
+
+  function displayFiles() {
+    const list = document.getElementById("fileList");
+
+    list.innerHTML = "";
+
+    if (selectedFiles.length === 0) {
+      return;
+    }
+
+    selectedFiles.forEach((file, index) => {
+
+      const item = document.createElement("div");
+      item.className = "file-item";
+
+      item.innerHTML = `
+        <span class="file-name">
+          ${index + 1}. ${escapeHtml(file.name)}
+        </span>
+
+        <button
+          class="remove-btn"
+          onclick="removeFile(${index})"
+        >
+          Remove
+        </button>
+      `;
+
+      list.appendChild(item);
+    });
+
+    document.getElementById("status").innerText =
+      selectedFiles.length +
+      " PDF file(s) selected.";
+  }
+
+  function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    displayFiles();
+  }
+
+  function clearFiles() {
+    selectedFiles = [];
+
+    document.getElementById("pdfFiles").value = "";
+    document.getElementById("fileList").innerHTML = "";
+
+    document.getElementById("status").innerText =
+      "Select two or more PDF files to begin.";
+  }
+
+  async function mergePDFs() {
+
+    const status = document.getElementById("status");
+
+    if (selectedFiles.length < 2) {
+      status.innerText =
+        "Please select at least 2 PDF files.";
+      return;
+    }
+
+    try {
+
+      status.innerText =
+        "⏳ Merging PDF files...";
+
+      const mergedPdf =
+        await PDFLib.PDFDocument.create();
+
+      for (const file of selectedFiles) {
+
+        const bytes =
+          await file.arrayBuffer();
+
+        const pdf =
+          await PDFLib.PDFDocument.load(bytes);
+
+        const pages =
+          await mergedPdf.copyPages(
+            pdf,
+            pdf.getPageIndices()
+          );
+
+        pages.forEach(page => {
+          mergedPdf.addPage(page);
+        });
+      }
+
+      const mergedBytes =
+        await mergedPdf.save();
+
+      const blob =
+        new Blob(
+          [mergedBytes],
+          { type: "application/pdf" }
+        );
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
+
+      link.href = url;
+      link.download =
+        "SmartSathi-Merged.pdf";
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+
+      status.innerText =
+        "✅ PDF files merged successfully!";
+
+    } catch (error) {
+
+      console.error(error);
+
+      status.innerText =
+        "❌ Failed to merge PDF files.";
+    }
+  }
+
+  function toggleTheme() {
+
+    document.body.classList.toggle("dark");
+
+    const button =
+      document.getElementById("themeButton");
+
+    if (document.body.classList.contains("dark")) {
+      button.innerText = "☀️ Light";
+    } else {
+      button.innerText = "🌙 Dark";
+    }
+  }
+
+  function escapeHtml(text) {
+
+    const div =
+      document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+  }
+</script>
+
+</body>
+</html>

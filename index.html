@@ -1255,6 +1255,7 @@ function openToolPage(toolId) {
       id="pdfQualityPreset"
       onchange="togglePdfCustomQuality(this.value)"
     >
+    <option value="1.00">Highest Quality (100%)</option>
       <option value="0.90">Higher Quality (90%)</option>
       <option value="0.80" selected>Good Quality (80%)</option>
       <option value="0.70">Medium Quality (70%)</option>
@@ -1851,7 +1852,17 @@ async function executePdfToJpg() {
     st.innerText = "✅ Download started!";
   } catch(e) { st.innerText = "❌ Render failed."; }
 }
+function togglePdfCustomQuality(value) {
+  const box = document.getElementById("pdfCustomQualityBox");
 
+  if (!box) return;
+
+  if (value === "custom") {
+    box.style.display = "block";
+  } else {
+    box.style.display = "none";
+  }
+}
 async function executeCompressPdf() {
   const file = document.getElementById("compressPdfInput")?.files[0];
   const st = document.getElementById("compressPdfStatus");
@@ -2072,125 +2083,105 @@ async function executeCompressPdf() {
 
     } else {
 
-      /*
-       * Try every scale.
-       * For each scale, find the highest quality
-       * that stays at or below the target.
-       */
-      for (const scale of scales) {
+ /* Target-size compression search */
+const targetLowerBytes = Math.max(1, targetBytes - (20 * 1024));
 
-        let low = 0.10;
-        let high = maxQuality;
-        let candidateUnderTarget = null;
-        let candidateQuality = 0;
+let selectedBytes = null;
+let selectedQuality = maxQuality;
+let selectedScale = 1.0;
+let selectedDifference = Infinity;
 
-        /*
-         * First check the maximum requested quality.
-         */
-        const maxBytes =
-          await buildCompressedPdf(
-            scale,
-            maxQuality
-          );
+for (const scale of scales) {
+  let low = 0.10;
+  let high = maxQuality;
 
-        if (maxBytes.length <= targetBytes) {
+  let bestForScaleBytes = null;
+  let bestForScaleQuality = 0;
 
-          candidateUnderTarget = maxBytes;
-          candidateQuality = maxQuality;
+  for (let i = 0; i < 8; i++) {
+    const middle = (low + high) / 2;
 
-          /*
-           * Binary search for the highest quality
-           * that remains below the target.
-           */
-          for (let i = 0; i < 7; i++) {
+    const testBytes = await buildCompressedPdf(
+      scale,
+      middle
+    );
 
-            const middle =
-              (low + high) / 2;
+    const size = testBytes.length;
 
-            const testBytes =
-              await buildCompressedPdf(
-                scale,
-                middle
-              );
+    /*
+     * Perfect range:
+     * Target se 20 KB se zyada neeche nahi.
+     * Target se upar bhi unnecessarily nahi jana.
+     */
+    if (size >= targetLowerBytes && size <= targetBytes) {
+      const difference = Math.abs(size - targetBytes);
 
-            if (testBytes.length <= targetBytes) {
-
-              candidateUnderTarget =
-                testBytes;
-
-              candidateQuality =
-                middle;
-
-              low = middle;
-
-            } else {
-
-              high = middle;
-            }
-          }
-
-          bestBytes =
-            candidateUnderTarget;
-
-          bestQuality =
-            candidateQuality;
-
-          bestScale =
-            scale;
-
-          break;
-        }
-
-        /*
-         * If even the lowest quality at this scale
-         * is still larger than the target, move to
-         * a lower resolution.
-         */
-        const minimumBytes =
-          await buildCompressedPdf(
-            scale,
-            0.10
-          );
-
-        if (minimumBytes.length <= targetBytes) {
-
-          candidateUnderTarget =
-            minimumBytes;
-
-          candidateQuality =
-            0.10;
-
-          bestBytes =
-            candidateUnderTarget;
-
-          bestQuality =
-            candidateQuality;
-
-          bestScale =
-            scale;
-
-          break;
-        }
-
-        /*
-         * Keep the smallest result so far.
-         */
-        if (
-          !bestBytes ||
-          minimumBytes.length < bestBytes.length
-        ) {
-          bestBytes =
-            minimumBytes;
-
-          bestQuality =
-            0.10;
-
-          bestScale =
-            scale;
-        }
+      if (difference < selectedDifference) {
+        selectedBytes = testBytes;
+        selectedQuality = middle;
+        selectedScale = scale;
+        selectedDifference = difference;
       }
-    }
 
+      bestForScaleBytes = testBytes;
+      bestForScaleQuality = middle;
+
+      low = middle;
+    } else if (size > targetBytes) {
+      high = middle;
+    } else {
+      /*
+       * Size target se 20 KB se bhi neeche hai.
+       * Quality badhao.
+       */
+      low = middle;
+    }
+  }
+
+  /*
+   * Agar exact 20 KB range nahi mili,
+   * to is scale ka closest result save karo.
+   */
+  if (!selectedBytes && bestForScaleBytes) {
+    const difference = Math.abs(
+      bestForScaleBytes.length - targetBytes
+    );
+
+    if (difference < selectedDifference) {
+      selectedBytes = bestForScaleBytes;
+      selectedQuality = bestForScaleQuality;
+      selectedScale = scale;
+      selectedDifference = difference;
+    }
+  }
+
+  /*
+   * Target ke bahut close aa gaya ho to
+   * unnecessary processing mat karo.
+   */
+  if (
+    selectedBytes &&
+    selectedBytes.length >= targetLowerBytes &&
+    selectedBytes.length <= targetBytes
+  ) {
+    break;
+  }
+}
+
+/*
+ * Final fallback
+ */
+if (!selectedBytes) {
+  selectedBytes = await buildCompressedPdf(
+    selectedScale,
+    selectedQuality
+  );
+}
+
+bestBytes = selectedBytes;
+bestQuality = selectedQuality;
+bestScale = selectedScale;
+    }
     if (!bestBytes) {
       throw new Error(
         "Unable to create compressed PDF."

@@ -3964,5 +3964,924 @@ Generated with SmartSathi AI
   };
 
 </script>
+  <style>
+/* ===== SMARTSATHI AI ADVANCED RESUME BUILDER ===== */
+
+.ss-resume-box{
+  margin-top:18px;
+  padding:18px;
+  border:1px solid #cbd5e1;
+  border-radius:14px;
+  background:#f8fafc;
+}
+
+.ss-resume-templates{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+  margin:10px 0 18px;
+}
+
+.ss-resume-templates button{
+  border:1px solid #cbd5e1;
+  background:white;
+  color:#1e293b;
+  padding:10px 6px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:12px;
+}
+
+.ss-resume-templates button.active{
+  background:#2563eb;
+  color:white;
+  border-color:#2563eb;
+}
+
+.ss-photo-box{
+  border:2px dashed #94a3b8;
+  border-radius:12px;
+  padding:15px;
+  text-align:center;
+  margin-bottom:18px;
+  background:#fff;
+}
+
+.ss-photo-preview{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  object-fit:cover;
+  display:none;
+  margin:0 auto 10px;
+}
+
+.ss-photo-placeholder{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:#e2e8f0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 10px;
+  font-size:35px;
+}
+
+.ss-photo-btn{
+  display:inline-block;
+  background:#2563eb;
+  color:white;
+  padding:10px 16px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.ss-photo-btn input{
+  display:none;
+}
+
+.ss-resume-actions{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:15px;
+}
+
+.ss-resume-actions button{
+  border:0;
+  border-radius:8px;
+  padding:11px 8px;
+  color:white;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.ss-pdf{background:#dc2626}
+.ss-word{background:#2563eb}
+.ss-text{background:#475569}
+.ss-download{background:#059669}
+
+.ss-resume-preview-wrap{
+  margin-top:20px;
+  padding:15px;
+  background:#dbe4ef;
+  border-radius:12px;
+  overflow:auto;
+}
+
+.ss-resume-sheet{
+  width:794px;
+  min-height:1123px;
+  background:white;
+  margin:auto;
+  padding:42px;
+  box-shadow:0 5px 25px #0002;
+  color:#111827;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+.ss-resume-header{
+  display:flex;
+  justify-content:space-between;
+  gap:25px;
+  border-bottom:2px solid #2563eb;
+  padding-bottom:18px;
+  margin-bottom:20px;
+}
+
+.ss-resume-name{
+  font-size:31px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.ss-resume-role{
+  font-size:16px;
+  font-weight:700;
+  color:#2563eb;
+  margin-bottom:8px;
+}
+
+.ss-resume-contact{
+  font-size:12px;
+  color:#475569;
+  line-height:1.8;
+}
+
+.ss-resume-photo{
+  width:105px;
+  height:125px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.ss-resume-section{
+  margin-bottom:18px;
+}
+
+.ss-resume-title{
+  font-size:14px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+  border-bottom:1px solid #cbd5e1;
+  padding-bottom:5px;
+  margin-bottom:8px;
+}
+
+.ss-resume-text{
+  white-space:pre-line;
+  font-size:13px;
+  line-height:1.65;
+}
+
+.ss-resume-skills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.ss-resume-skill{
+  font-size:11px;
+  padding:5px 9px;
+  border-radius:20px;
+  background:#e8eefc;
+  color:#1e3a8a;
+}
+
+/* MINIMAL */
+.ss-template-minimal .ss-resume-header{
+  border-bottom:1px solid #94a3b8;
+}
+
+.ss-template-minimal .ss-resume-title{
+  border:0;
+  letter-spacing:1.4px;
+}
+
+/* CLASSIC CORPORATE */
+.ss-template-classic .ss-resume-header{
+  background:#f1f5f9;
+  padding:18px;
+  border:0;
+}
+
+.ss-template-classic .ss-resume-title{
+  background:#1e293b;
+  color:white;
+  padding:6px 8px;
+  border:0;
+}
+
+/* EXECUTIVE */
+.ss-template-executive .ss-resume-header{
+  background:#111827;
+  color:white;
+  padding:20px;
+  border:0;
+}
+
+.ss-template-executive .ss-resume-role{
+  color:#60a5fa;
+}
+
+.ss-template-executive .ss-resume-contact{
+  color:#cbd5e1;
+}
+
+/* CREATIVE */
+.ss-template-creative .ss-resume-header{
+  border-left:7px solid #7c3aed;
+  padding-left:18px;
+  border-bottom:0;
+}
+
+.ss-template-creative .ss-resume-role,
+.ss-template-creative .ss-resume-title{
+  color:#7c3aed;
+}
+
+.ss-template-creative .ss-resume-skill{
+  background:#f3e8ff;
+  color:#6b21a8;
+}
+
+@media(max-width:900px){
+  .ss-resume-templates{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .ss-resume-actions{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .ss-resume-sheet{
+    width:100%;
+    min-height:auto;
+  }
+}
+
+@media print{
+  body *{
+    visibility:hidden!important;
+  }
+
+  #ssLiveResume,
+  #ssLiveResume *{
+    visibility:visible!important;
+  }
+
+  #ssLiveResume{
+    position:absolute;
+    left:0;
+    top:0;
+    width:210mm;
+    min-height:297mm;
+    box-shadow:none;
+  }
+}
+</style>
+
+<script>
+/* ===== SMARTSATHI AI FINAL RESUME BUILDER ===== */
+
+(function(){
+
+let ssTemplate="modern";
+let ssPhoto="";
+
+function ssEscape(value){
+  return String(value||"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function ssVal(id,fallback){
+  const el=document.getElementById(id);
+  return el && el.value.trim() ? el.value.trim() : fallback;
+}
+
+window.ssSelectTemplate=function(template,button){
+  ssTemplate=template;
+
+  document
+    .querySelectorAll(".ss-resume-templates button")
+    .forEach(b=>b.classList.remove("active"));
+
+  if(button) button.classList.add("active");
+
+  ssRenderResume();
+};
+
+window.ssPhotoUpload=function(input){
+
+  const file=input.files && input.files[0];
+
+  if(!file) return;
+
+  if(!file.type.startsWith("image/")){
+    alert("Please select an image file.");
+    return;
+  }
+
+  const reader=new FileReader();
+
+  reader.onload=function(e){
+
+    ssPhoto=e.target.result;
+
+    const img=document.getElementById("ssPhotoPreview");
+    const placeholder=document.getElementById("ssPhotoPlaceholder");
+
+    if(img){
+      img.src=ssPhoto;
+      img.style.display="block";
+    }
+
+    if(placeholder){
+      placeholder.style.display="none";
+    }
+
+    ssRenderResume();
+  };
+
+  reader.readAsDataURL(file);
+};
+
+function ssRenderResume(){
+
+  const output=document.getElementById("ssResumeOutput");
+
+  if(!output) return;
+
+  const name=ssVal("ssName","Alex Morgan");
+  const role=ssVal("ssRole","Digital Operations Specialist");
+  const email=ssVal("ssEmail","alex.morgan@example.com");
+  const phone=ssVal("ssPhone","+91 98765 43210");
+  const location=ssVal("ssLocation","New Delhi, India");
+
+  const summary=ssVal(
+    "ssSummary",
+    "Detail-oriented professional with experience in operations, customer support, digital tools and process coordination."
+  );
+
+  const skills=ssVal(
+    "ssSkills",
+    "Operations, Customer Support, Data Entry, MS Office, Communication, Problem Solving"
+  );
+
+  const experience=ssVal(
+    "ssExperience",
+    "Digital Operations Associate | 2024 - Present\n• Managed daily digital operations and customer requests.\n• Maintained accurate records and prepared reports."
+  );
+
+  const education=ssVal(
+    "ssEducation",
+    "Bachelor's Degree | ABC University | 2024 - 2027\nHigher Secondary | ABC School | 2023"
+  );
+
+  const projects=ssVal(
+    "ssProjects",
+    "Smart Digital Workflow Project\n• Created a simple workflow for organizing documents and routine tasks."
+  );
+
+  const certifications=ssVal(
+    "ssCertifications",
+    "MS Office & Computer Applications\nDigital Productivity Fundamentals"
+  );
+
+  const skillHTML=skills
+    .split(",")
+    .map(s=>s.trim())
+    .filter(Boolean)
+    .map(s=>`<span class="ss-resume-skill">${ssEscape(s)}</span>`)
+    .join("");
+
+  const photoHTML=ssPhoto
+    ? `<img class="ss-resume-photo" src="${ssPhoto}" alt="Resume Photo">`
+    : "";
+
+  output.innerHTML=`
+    <div id="ssLiveResume" class="ss-resume-sheet ss-template-${ssTemplate}">
+
+      <div class="ss-resume-header">
+
+        <div style="flex:1">
+
+          <div class="ss-resume-name">
+            ${ssEscape(name)}
+          </div>
+
+          <div class="ss-resume-role">
+            ${ssEscape(role)}
+          </div>
+
+          <div class="ss-resume-contact">
+            📧 ${ssEscape(email)}
+            &nbsp; | &nbsp;
+            📞 ${ssEscape(phone)}
+            &nbsp; | &nbsp;
+            📍 ${ssEscape(location)}
+          </div>
+
+        </div>
+
+        ${photoHTML}
+
+      </div>
+
+      <div class="ss-resume-section">
+        <div class="ss-resume-title">
+          Professional Summary
+        </div>
+
+        <div class="ss-resume-text">
+          ${ssEscape(summary)}
+        </div>
+      </div>
+
+      <div class="ss-resume-section">
+        <div class="ss-resume-title">
+          Core Skills
+        </div>
+
+        <div class="ss-resume-skills">
+          ${skillHTML}
+        </div>
+      </div>
+
+      <div class="ss-resume-section">
+        <div class="ss-resume-title">
+          Work Experience
+        </div>
+
+        <div class="ss-resume-text">
+          ${ssEscape(experience)}
+        </div>
+      </div>
+
+      <div class="ss-resume-section">
+        <div class="ss-resume-title">
+          Education
+        </div>
+
+        <div class="ss-resume-text">
+          ${ssEscape(education)}
+        </div>
+      </div>
+
+      <div class="ss-resume-section">
+        <div class="ss-resume-title">
+          Projects
+        </div>
+
+        <div class="ss-resume-text">
+          ${ssEscape(projects)}
+        </div>
+      </div>
+
+      <div class="ss-resume-section">
+        <div class="ss-resume-title">
+          Certifications
+        </div>
+
+        <div class="ss-resume-text">
+          ${ssEscape(certifications)}
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+function ssBuildResumeForm(){
+
+  const form=document.getElementById("form");
+
+  if(!form) return;
+
+  form.innerHTML=`
+
+    <div class="ss-resume-box">
+
+      <h3>🎨 Select Resume Template</h3>
+
+      <div class="ss-resume-templates">
+
+        <button class="active"
+          onclick="ssSelectTemplate('modern',this)">
+          Modern Blue
+        </button>
+
+        <button
+          onclick="ssSelectTemplate('minimal',this)">
+          Minimal
+        </button>
+
+        <button
+          onclick="ssSelectTemplate('classic',this)">
+          Classic Corporate
+        </button>
+
+        <button
+          onclick="ssSelectTemplate('executive',this)">
+          Executive
+        </button>
+
+        <button
+          onclick="ssSelectTemplate('creative',this)">
+          Creative
+        </button>
+
+      </div>
+
+      <h3>📷 Profile Photo</h3>
+
+      <div class="ss-photo-box">
+
+        <img
+          id="ssPhotoPreview"
+          class="ss-photo-preview"
+          alt="Photo Preview">
+
+        <div
+          id="ssPhotoPlaceholder"
+          class="ss-photo-placeholder">
+          👤
+        </div>
+
+        <label class="ss-photo-btn">
+
+          📷 Choose Photo
+
+          <input
+            type="file"
+            accept="image/*"
+            onchange="ssPhotoUpload(this)">
+
+        </label>
+
+        <div style="font-size:12px;color:#64748b;margin-top:7px;">
+          Optional • JPG / PNG • Photo appears top-right
+        </div>
+
+      </div>
+
+      <h3>👤 Personal Information</h3>
+
+      <label>Full Name</label>
+      <input id="ssName"
+        value="Alex Morgan"
+        placeholder="Your full name">
+
+      <label>Professional Title / Role</label>
+      <input id="ssRole"
+        value="Digital Operations Specialist"
+        placeholder="Professional title">
+
+      <div class="flex-row">
+
+        <div>
+          <label>Email</label>
+          <input id="ssEmail"
+            value="alex.morgan@example.com">
+        </div>
+
+        <div>
+          <label>Phone</label>
+          <input id="ssPhone"
+            value="+91 98765 43210">
+        </div>
+
+        <div>
+          <label>Location</label>
+          <input id="ssLocation"
+            value="New Delhi, India">
+        </div>
+
+      </div>
+
+      <label>Professional Summary</label>
+
+      <textarea id="ssSummary">
+Detail-oriented professional with experience in operations, customer support, digital tools and process coordination.
+      </textarea>
+
+      <label>Core Skills — comma separated</label>
+
+      <input id="ssSkills"
+        value="Operations, Customer Support, Data Entry, MS Office, Communication, Problem Solving">
+
+      <label>Work Experience</label>
+
+      <textarea id="ssExperience">
+Digital Operations Associate | 2024 - Present
+• Managed daily digital operations and customer requests.
+• Maintained accurate records and prepared reports.
+• Supported team members with documentation and process coordination.
+      </textarea>
+
+      <label>Education</label>
+
+      <textarea id="ssEducation">
+Bachelor's Degree | ABC University | 2024 - 2027
+Higher Secondary | ABC School | 2023
+      </textarea>
+
+      <label>Projects</label>
+
+      <textarea id="ssProjects">
+Smart Digital Workflow Project
+• Created a simple workflow for organizing documents and routine tasks.
+      </textarea>
+
+      <label>Certifications</label>
+
+      <textarea id="ssCertifications">
+MS Office & Computer Applications
+Digital Productivity Fundamentals
+      </textarea>
+
+      <div class="ss-resume-actions">
+
+        <button class="ss-pdf"
+          onclick="ssPrintPDF()">
+          📄 Download PDF
+        </button>
+
+        <button class="ss-word"
+          onclick="ssDownloadDOC()">
+          📝 Download DOC
+        </button>
+
+        <button class="ss-text"
+          onclick="ssDownloadTXT()">
+          📃 Download TXT
+        </button>
+
+        <button class="ss-download"
+          onclick="ssDownloadResume()">
+          ⬇ Download Resume
+        </button>
+
+      </div>
+
+      <div class="ss-resume-preview-wrap">
+
+        <div id="ssResumeOutput"></div>
+
+      </div>
+
+    </div>
+  `;
+
+  form
+    .querySelectorAll("input:not([type=file]),textarea")
+    .forEach(el=>{
+      el.addEventListener("input",ssRenderResume);
+    });
+
+  ssRenderResume();
+}
+
+window.ssPrintPDF=function(){
+  ssRenderResume();
+  setTimeout(()=>window.print(),100);
+};
+
+function ssResumeHTML(){
+
+  const resume=document.getElementById("ssLiveResume");
+
+  if(!resume) return "";
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Resume</title>
+<style>
+
+body{
+  margin:0;
+  background:white;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+.ss-resume-sheet{
+  width:210mm;
+  min-height:297mm;
+  padding:14mm;
+  box-sizing:border-box;
+  margin:auto;
+  color:#111827;
+}
+
+.ss-resume-header{
+  display:flex;
+  justify-content:space-between;
+  gap:25px;
+  border-bottom:2px solid #2563eb;
+  padding-bottom:18px;
+  margin-bottom:20px;
+}
+
+.ss-resume-name{
+  font-size:31px;
+  font-weight:800;
+}
+
+.ss-resume-role{
+  font-size:16px;
+  font-weight:700;
+  color:#2563eb;
+}
+
+.ss-resume-contact{
+  font-size:12px;
+  color:#475569;
+  margin-top:8px;
+}
+
+.ss-resume-photo{
+  width:105px;
+  height:125px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.ss-resume-section{
+  margin-bottom:18px;
+}
+
+.ss-resume-title{
+  font-size:14px;
+  font-weight:800;
+  text-transform:uppercase;
+  border-bottom:1px solid #cbd5e1;
+  padding-bottom:5px;
+  margin-bottom:8px;
+}
+
+.ss-resume-text{
+  white-space:pre-line;
+  font-size:13px;
+  line-height:1.65;
+}
+
+.ss-resume-skills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.ss-resume-skill{
+  font-size:11px;
+  padding:5px 9px;
+  background:#e8eefc;
+  color:#1e3a8a;
+  border-radius:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+${resume.outerHTML}
+
+</body>
+</html>
+`;
+}
+
+function ssSave(blob,filename){
+
+  const url=URL.createObjectURL(blob);
+
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download=filename;
+
+  document.body.appendChild(a);
+
+  a.click();
+
+  a.remove();
+
+  setTimeout(()=>{
+    URL.revokeObjectURL(url);
+  },1000);
+}
+
+window.ssDownloadDOC=function(){
+
+  ssRenderResume();
+
+  const blob=new Blob(
+    [ssResumeHTML()],
+    {type:"application/msword"}
+  );
+
+  ssSave(
+    blob,
+    "SmartSathi-Resume.doc"
+  );
+};
+
+window.ssDownloadTXT=function(){
+
+  const text=`
+
+${ssVal("ssName","Alex Morgan")}
+
+${ssVal("ssRole","Digital Operations Specialist")}
+
+${ssVal("ssEmail","alex.morgan@example.com")}
+${ssVal("ssPhone","+91 98765 43210")}
+${ssVal("ssLocation","New Delhi, India")}
+
+PROFESSIONAL SUMMARY
+
+${ssVal("ssSummary","")}
+
+CORE SKILLS
+
+${ssVal("ssSkills","")}
+
+WORK EXPERIENCE
+
+${ssVal("ssExperience","")}
+
+EDUCATION
+
+${ssVal("ssEducation","")}
+
+PROJECTS
+
+${ssVal("ssProjects","")}
+
+CERTIFICATIONS
+
+${ssVal("ssCertifications","")}
+
+`;
+
+  ssSave(
+    new Blob([text],{type:"text/plain"}),
+    "SmartSathi-Resume.txt"
+  );
+};
+
+window.ssDownloadResume=function(){
+
+  ssRenderResume();
+
+  const blob=new Blob(
+    [ssResumeHTML()],
+    {type:"text/html"}
+  );
+
+  ssSave(
+    blob,
+    "SmartSathi-Resume.html"
+  );
+};
+
+/* Connect the new builder to the existing Resume tool */
+
+if(window.openToolPage && !window.__ssResumeWrapped){
+
+  const originalOpenToolPage=window.openToolPage;
+
+  window.openToolPage=function(toolId){
+
+    originalOpenToolPage.apply(this,arguments);
+
+    if(toolId==="resume"){
+
+      setTimeout(function(){
+
+        ssBuildResumeForm();
+
+      },50);
+
+    }
+
+  };
+
+  window.__ssResumeWrapped=true;
+}
+
+})();
+</script>
 </body>
 </html>

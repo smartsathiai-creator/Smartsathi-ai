@@ -2864,5 +2864,1105 @@ window.sendMobileReset = function () {
   });
 
 </script>
+  <!-- =========================================================
+ SMARTSATHI AI - ADVANCED RESUME BUILDER UPGRADE
+ 5 PROFESSIONAL TEMPLATES + OPTIONAL PHOTO
+ ========================================================= -->
+
+<style>
+.resume-template-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin:12px 0 18px;
+}
+
+.resume-template-btn{
+  border:1px solid #cbd5e1;
+  background:#fff;
+  color:#334155;
+  padding:10px 8px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:12px;
+  transition:.2s;
+}
+
+.resume-template-btn:hover{
+  border-color:#2563eb;
+  transform:translateY(-1px);
+}
+
+.resume-template-btn.active{
+  background:#2563eb;
+  color:#fff;
+  border-color:#2563eb;
+}
+
+.resume-photo-box{
+  border:2px dashed #cbd5e1;
+  border-radius:12px;
+  padding:14px;
+  margin:12px 0 18px;
+  background:#f8fafc;
+}
+
+.resume-photo-box label{
+  display:block;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+.resume-photo-preview{
+  width:90px;
+  height:105px;
+  object-fit:cover;
+  border-radius:6px;
+  border:1px solid #cbd5e1;
+  display:none;
+  margin-top:10px;
+}
+
+.resume-sheet{
+  width:100%;
+  max-width:850px;
+  margin:25px auto;
+  background:#fff;
+  color:#1e293b;
+  box-shadow:0 8px 30px rgba(15,23,42,.12);
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+}
+
+.resume-header{
+  position:relative;
+  padding:28px;
+}
+
+.resume-photo{
+  position:absolute;
+  right:25px;
+  top:25px;
+  width:105px;
+  height:125px;
+  object-fit:cover;
+  border:4px solid #fff;
+  box-shadow:0 3px 12px rgba(0,0,0,.18);
+  border-radius:5px;
+}
+
+.resume-photo-placeholder{
+  position:absolute;
+  right:25px;
+  top:25px;
+  width:105px;
+  height:125px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border:2px dashed #cbd5e1;
+  color:#94a3b8;
+  font-size:11px;
+  background:#f8fafc;
+}
+
+.resume-content{
+  padding:25px 30px;
+}
+
+.resume-section{
+  margin-bottom:18px;
+}
+
+.resume-section-title{
+  font-size:14px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+  margin-bottom:7px;
+  padding-bottom:5px;
+  border-bottom:2px solid #e2e8f0;
+}
+
+.resume-text{
+  font-size:13px;
+  line-height:1.65;
+  white-space:pre-line;
+}
+
+.resume-contact{
+  font-size:12px;
+  line-height:1.7;
+}
+
+.resume-name{
+  font-size:30px;
+  font-weight:800;
+  margin:0 130px 5px 0;
+}
+
+.resume-role{
+  font-size:15px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.resume-skills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.resume-skill{
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:11px;
+  background:#f1f5f9;
+}
+
+/* MODERN BLUE */
+.resume-modern .resume-header{
+  background:linear-gradient(135deg,#1d4ed8,#2563eb);
+  color:white;
+}
+
+.resume-modern .resume-role{
+  color:#dbeafe;
+}
+
+.resume-modern .resume-content{
+  background:white;
+}
+
+.resume-modern .resume-section-title{
+  color:#1d4ed8;
+  border-color:#bfdbfe;
+}
+
+/* MINIMAL */
+.resume-minimal{
+  border:1px solid #dbe3ec;
+  box-shadow:none;
+}
+
+.resume-minimal .resume-header{
+  border-bottom:1px solid #e2e8f0;
+}
+
+.resume-minimal .resume-section-title{
+  color:#334155;
+}
+
+/* CLASSIC */
+.resume-classic{
+  border:2px solid #1e293b;
+  font-family:Georgia,serif;
+}
+
+.resume-classic .resume-header{
+  background:#f8fafc;
+  border-bottom:3px solid #1e293b;
+}
+
+.resume-classic .resume-section-title{
+  color:#111827;
+  border-color:#111827;
+}
+
+/* EXECUTIVE */
+.resume-executive{
+  border:1px solid #cbd5e1;
+}
+
+.resume-executive .resume-header{
+  background:#0f172a;
+  color:#fff;
+  border-left:9px solid #f59e0b;
+}
+
+.resume-executive .resume-role{
+  color:#fbbf24;
+}
+
+.resume-executive .resume-section-title{
+  color:#0f172a;
+  border-color:#f59e0b;
+}
+
+/* CREATIVE */
+.resume-creative{
+  border:1px solid #ddd6fe;
+}
+
+.resume-creative .resume-header{
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);
+  color:#fff;
+}
+
+.resume-creative .resume-role{
+  color:#ede9fe;
+}
+
+.resume-creative .resume-section-title{
+  color:#6d28d9;
+  border-color:#ddd6fe;
+}
+
+@media(max-width:800px){
+  .resume-template-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:600px){
+  .resume-template-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .resume-name{
+    font-size:24px;
+    margin-right:110px;
+  }
+
+  .resume-photo,
+  .resume-photo-placeholder{
+    width:80px;
+    height:95px;
+    right:15px;
+    top:18px;
+  }
+
+  .resume-header{
+    padding:20px;
+  }
+
+  .resume-content{
+    padding:20px;
+  }
+}
+
+@media print{
+  .resume-sheet{
+    box-shadow:none!important;
+    margin:0!important;
+    max-width:none!important;
+  }
+}
+</style>
+
+<script>
+
+/* =========================================================
+   ADVANCED RESUME BUILDER
+   ========================================================= */
+
+let smartResumeTemplate = "modern";
+let smartResumePhoto = "";
+
+/* ---------- HTML SAFETY ---------- */
+
+function smartEscape(value){
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+/* ---------- PHOTO ---------- */
+
+function smartResumePhotoUpload(input){
+
+  const file = input.files && input.files[0];
+
+  if(!file) return;
+
+  if(!file.type.startsWith("image/")){
+    alert("Please select an image file.");
+    input.value="";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    smartResumePhoto = e.target.result;
+
+    const preview =
+      document.getElementById("smartResumePhotoPreview");
+
+    if(preview){
+      preview.src = smartResumePhoto;
+      preview.style.display="block";
+    }
+
+    smartRenderResume();
+
+  };
+
+  reader.readAsDataURL(file);
+}
+
+/* ---------- TEMPLATE ---------- */
+
+function smartSelectResumeTemplate(template){
+
+  smartResumeTemplate = template;
+
+  document
+    .querySelectorAll(".resume-template-btn")
+    .forEach(btn=>{
+      btn.classList.remove("active");
+    });
+
+  const active =
+    document.querySelector(
+      '.resume-template-btn[data-template="'+template+'"]'
+    );
+
+  if(active){
+    active.classList.add("active");
+  }
+
+  smartRenderResume();
+}
+
+/* ---------- INSTALL NEW CONTROLS ---------- */
+
+function smartInstallResumeControls(){
+
+  const form = document.getElementById("form");
+
+  if(!form) return;
+
+  /* Template selector */
+
+  let templateBox =
+    document.getElementById("smartResumeTemplateBox");
+
+  if(!templateBox){
+
+    const oldBar =
+      form.querySelector(".tmpl-select-bar");
+
+    templateBox=document.createElement("div");
+
+    templateBox.id="smartResumeTemplateBox";
+
+    templateBox.innerHTML=`
+
+      <label style="font-weight:800;">
+        Choose Resume Template
+      </label>
+
+      <div class="resume-template-grid">
+
+        <button type="button"
+          class="resume-template-btn active"
+          data-template="modern"
+          onclick="smartSelectResumeTemplate('modern')">
+          🔵 Modern Blue
+        </button>
+
+        <button type="button"
+          class="resume-template-btn"
+          data-template="minimal"
+          onclick="smartSelectResumeTemplate('minimal')">
+          ⚪ Clean Minimal
+        </button>
+
+        <button type="button"
+          class="resume-template-btn"
+          data-template="classic"
+          onclick="smartSelectResumeTemplate('classic')">
+          📄 Classic
+        </button>
+
+        <button type="button"
+          class="resume-template-btn"
+          data-template="executive"
+          onclick="smartSelectResumeTemplate('executive')">
+          🟡 Executive
+        </button>
+
+        <button type="button"
+          class="resume-template-btn"
+          data-template="creative"
+          onclick="smartSelectResumeTemplate('creative')">
+          🟣 Creative
+        </button>
+
+      </div>
+
+      <div class="resume-photo-box">
+
+        <label>
+          📷 Optional Profile Photo
+        </label>
+
+        <input
+          type="file"
+          id="smartResumePhotoInput"
+          accept="image/png,image/jpeg,image/webp"
+          onchange="smartResumePhotoUpload(this)"
+        >
+
+        <small style="display:block;margin-top:6px;color:#64748b;">
+          Photo is optional. If uploaded, it will appear in the
+          top-right corner of the resume.
+        </small>
+
+        <img
+          id="smartResumePhotoPreview"
+          class="resume-photo-preview"
+          alt="Photo preview"
+        >
+
+      </div>
+    `;
+
+    if(oldBar){
+      oldBar.replaceWith(templateBox);
+    }else{
+      form.prepend(templateBox);
+    }
+  }
+}
+
+/* ---------- GET VALUES ---------- */
+
+function smartResumeValue(id, demo){
+
+  const el=document.getElementById(id);
+
+  if(!el) return demo;
+
+  const value=el.value.trim();
+
+  return value || demo;
+}
+
+/* ---------- RENDER ---------- */
+
+function smartRenderResume(){
+
+  smartInstallResumeControls();
+
+  const output =
+    document.getElementById("resumeRenderOutput");
+
+  if(!output) return;
+
+  const name =
+    smartResumeValue(
+      "resFullName",
+      "Alex Morgan"
+    );
+
+  const role =
+    smartResumeValue(
+      "resDesignation",
+      "Digital Operations Specialist"
+    );
+
+  const email =
+    smartResumeValue(
+      "resUserEmail",
+      "alex.morgan@example.com"
+    );
+
+  const phone =
+    smartResumeValue(
+      "resUserPhone",
+      "+91 98765 43210"
+    );
+
+  const location =
+    smartResumeValue(
+      "resUserLocation",
+      "New Delhi, India"
+    );
+
+  const summary =
+    smartResumeValue(
+      "resSummaryText",
+      "Motivated and detail-oriented professional with strong communication, digital operations and problem-solving skills. Focused on delivering efficient and high-quality work."
+    );
+
+  const skills =
+    smartResumeValue(
+      "resSkillsText",
+      "Communication, MS Office, Data Management, Teamwork, Problem Solving, Customer Support"
+    );
+
+  const experience =
+    smartResumeValue(
+      "resExperienceText",
+      "Operations Associate | 2024 - Present\n• Managed daily operational activities and documentation.\n• Supported customers and maintained accurate records.\n• Collaborated with team members to complete targets efficiently."
+    );
+
+  const education =
+    smartResumeValue(
+      "resEducationText",
+      "Bachelor's Degree | Example University | 2024\nHigher Secondary Education | Example School | 2021"
+    );
+
+  const projects =
+    smartResumeValue(
+      "resProjectsText",
+      "Digital Documentation Project\nCreated and organized digital records using productivity and document-management tools."
+    );
+
+  const certifications =
+    smartResumeValue(
+      "resCertificationsText",
+      "Advanced Computer Applications\nMS Office & Digital Productivity"
+    );
+
+  let templateClass="resume-modern";
+
+  if(smartResumeTemplate==="minimal")
+    templateClass="resume-minimal";
+
+  if(smartResumeTemplate==="classic")
+    templateClass="resume-classic";
+
+  if(smartResumeTemplate==="executive")
+    templateClass="resume-executive";
+
+  if(smartResumeTemplate==="creative")
+    templateClass="resume-creative";
+
+  const photoHTML =
+    smartResumePhoto
+      ? `<img class="resume-photo"
+              src="${smartResumePhoto}"
+              alt="Profile Photo">`
+      : `<div class="resume-photo-placeholder">
+           Optional Photo
+         </div>`;
+
+  const skillArray =
+    skills
+      .split(",")
+      .map(x=>x.trim())
+      .filter(Boolean);
+
+  const skillHTML =
+    skillArray
+      .map(x=>`<span class="resume-skill">${smartEscape(x)}</span>`)
+      .join("");
+
+  output.innerHTML=`
+
+    <div
+      class="resume-sheet ${templateClass}"
+      id="livePrintableResume"
+    >
+
+      <div class="resume-header">
+
+        ${photoHTML}
+
+        <div class="resume-name">
+          ${smartEscape(name)}
+        </div>
+
+        <div class="resume-role">
+          ${smartEscape(role)}
+        </div>
+
+        <div class="resume-contact">
+          📞 ${smartEscape(phone)}
+          &nbsp; | &nbsp;
+          ✉️ ${smartEscape(email)}
+          &nbsp; | &nbsp;
+          📍 ${smartEscape(location)}
+        </div>
+
+      </div>
+
+      <div class="resume-content">
+
+        <div class="resume-section">
+
+          <div class="resume-section-title">
+            Professional Summary
+          </div>
+
+          <div class="resume-text">
+            ${smartEscape(summary)}
+          </div>
+
+        </div>
+
+        <div class="resume-section">
+
+          <div class="resume-section-title">
+            Core Skills
+          </div>
+
+          <div class="resume-skills">
+            ${skillHTML}
+          </div>
+
+        </div>
+
+        <div class="resume-section">
+
+          <div class="resume-section-title">
+            Work Experience
+          </div>
+
+          <div class="resume-text">
+            ${smartEscape(experience)}
+          </div>
+
+        </div>
+
+        <div class="resume-section">
+
+          <div class="resume-section-title">
+            Education
+          </div>
+
+          <div class="resume-text">
+            ${smartEscape(education)}
+          </div>
+
+        </div>
+
+        <div class="resume-section">
+
+          <div class="resume-section-title">
+            Projects
+          </div>
+
+          <div class="resume-text">
+            ${smartEscape(projects)}
+          </div>
+
+        </div>
+
+        <div class="resume-section">
+
+          <div class="resume-section-title">
+            Certifications
+          </div>
+
+          <div class="resume-text">
+            ${smartEscape(certifications)}
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+/* ---------- REPLACE OLD PREVIEW FUNCTION ---------- */
+
+window.renderResumePreview =
+  function(){
+
+    smartInstallResumeControls();
+
+    smartRenderResume();
+
+  };
+
+/* ---------- REPLACE OLD TEMPLATE FUNCTION ---------- */
+
+window.setResumeTemplate =
+  function(template, btn){
+
+    smartSelectResumeTemplate(template);
+
+  };
+
+/* ---------- PDF / PRINT ---------- */
+
+window.printSavePdfResume =
+  function(){
+
+    const resume =
+      document.getElementById(
+        "livePrintableResume"
+      );
+
+    if(!resume){
+      alert("Please preview your resume first.");
+      return;
+    }
+
+    const printWindow =
+      window.open(
+        "",
+        "_blank"
+      );
+
+    if(!printWindow){
+      alert("Please allow pop-ups to download your resume.");
+      return;
+    }
+
+    printWindow.document.write(`
+
+      <!DOCTYPE html>
+
+      <html>
+
+      <head>
+
+        <title>SmartSathi AI Resume</title>
+
+        <style>
+
+          *{
+            box-sizing:border-box;
+          }
+
+          body{
+            margin:0;
+            padding:20px;
+            background:#fff;
+            font-family:Arial,sans-serif;
+          }
+
+          .resume-sheet{
+            width:100%;
+            max-width:850px;
+            margin:auto;
+            background:#fff;
+            color:#1e293b;
+          }
+
+          .resume-header{
+            position:relative;
+            padding:28px;
+          }
+
+          .resume-photo{
+            position:absolute;
+            right:25px;
+            top:25px;
+            width:105px;
+            height:125px;
+            object-fit:cover;
+            border:4px solid #fff;
+          }
+
+          .resume-photo-placeholder{
+            position:absolute;
+            right:25px;
+            top:25px;
+            width:105px;
+            height:125px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border:2px dashed #cbd5e1;
+            color:#94a3b8;
+          }
+
+          .resume-name{
+            font-size:30px;
+            font-weight:800;
+            margin-right:130px;
+          }
+
+          .resume-role{
+            font-size:15px;
+            font-weight:700;
+            margin:5px 0 10px;
+          }
+
+          .resume-contact{
+            font-size:12px;
+            line-height:1.7;
+          }
+
+          .resume-content{
+            padding:25px 30px;
+          }
+
+          .resume-section{
+            margin-bottom:18px;
+          }
+
+          .resume-section-title{
+            font-size:14px;
+            font-weight:800;
+            text-transform:uppercase;
+            border-bottom:2px solid #ddd;
+            padding-bottom:5px;
+            margin-bottom:7px;
+          }
+
+          .resume-text{
+            font-size:13px;
+            line-height:1.65;
+            white-space:pre-line;
+          }
+
+          .resume-skills{
+            display:flex;
+            flex-wrap:wrap;
+            gap:7px;
+          }
+
+          .resume-skill{
+            padding:5px 9px;
+            background:#f1f5f9;
+            border-radius:20px;
+            font-size:11px;
+          }
+
+          .resume-modern .resume-header{
+            background:#2563eb;
+            color:#fff;
+          }
+
+          .resume-minimal{
+            border:1px solid #ddd;
+          }
+
+          .resume-classic{
+            border:2px solid #1e293b;
+            font-family:Georgia,serif;
+          }
+
+          .resume-classic .resume-header{
+            background:#f8fafc;
+            border-bottom:3px solid #1e293b;
+          }
+
+          .resume-executive .resume-header{
+            background:#0f172a;
+            color:#fff;
+            border-left:8px solid #f59e0b;
+          }
+
+          .resume-creative .resume-header{
+            background:#6d28d9;
+            color:#fff;
+          }
+
+          @page{
+            size:A4;
+            margin:10mm;
+          }
+
+        </style>
+
+      </head>
+
+      <body>
+
+        ${resume.outerHTML}
+
+      </body>
+
+      </html>
+
+    `);
+
+    printWindow.document.close();
+
+    printWindow.focus();
+
+    setTimeout(
+      ()=>{
+        printWindow.print();
+      },
+      500
+    );
+
+  };
+
+/* ---------- WORD ---------- */
+
+window.downloadResumeWord =
+  function(){
+
+    const resume =
+      document.getElementById(
+        "livePrintableResume"
+      );
+
+    if(!resume){
+      alert("Please preview your resume first.");
+      return;
+    }
+
+    const html=`
+
+      <html>
+      <head>
+      <meta charset="UTF-8">
+      <title>SmartSathi Resume</title>
+      </head>
+
+      <body>
+        ${resume.outerHTML}
+      </body>
+
+      </html>
+    `;
+
+    const blob =
+      new Blob(
+        ["\ufeff",html],
+        {
+          type:"application/msword"
+        }
+      );
+
+    const url=
+      URL.createObjectURL(blob);
+
+    const a=
+      document.createElement("a");
+
+    a.href=url;
+    a.download="SmartSathi-Resume.doc";
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    setTimeout(
+      ()=>{
+        URL.revokeObjectURL(url);
+      },
+      1000
+    );
+
+  };
+
+/* ---------- TEXT ---------- */
+
+window.downloadResumeText =
+  function(){
+
+    const name =
+      smartResumeValue(
+        "resFullName",
+        "Alex Morgan"
+      );
+
+    const role =
+      smartResumeValue(
+        "resDesignation",
+        "Digital Operations Specialist"
+      );
+
+    const email =
+      smartResumeValue(
+        "resUserEmail",
+        "alex.morgan@example.com"
+      );
+
+    const phone =
+      smartResumeValue(
+        "resUserPhone",
+        "+91 98765 43210"
+      );
+
+    const location =
+      smartResumeValue(
+        "resUserLocation",
+        "New Delhi, India"
+      );
+
+    const summary =
+      smartResumeValue(
+        "resSummaryText",
+        "Professional summary"
+      );
+
+    const skills =
+      smartResumeValue(
+        "resSkillsText",
+        "Communication, Teamwork, Problem Solving"
+      );
+
+    const experience =
+      smartResumeValue(
+        "resExperienceText",
+        "Professional experience"
+      );
+
+    const education =
+      smartResumeValue(
+        "resEducationText",
+        "Educational qualification"
+      );
+
+    const text = `
+
+${name.toUpperCase()}
+${role}
+
+Phone: ${phone}
+Email: ${email}
+Location: ${location}
+
+PROFESSIONAL SUMMARY
+${summary}
+
+CORE SKILLS
+${skills}
+
+WORK EXPERIENCE
+${experience}
+
+EDUCATION
+${education}
+
+Generated with SmartSathi AI
+`;
+
+    const blob =
+      new Blob(
+        [text],
+        {
+          type:"text/plain;charset=utf-8"
+        }
+      );
+
+    const url=
+      URL.createObjectURL(blob);
+
+    const a=
+      document.createElement("a");
+
+    a.href=url;
+    a.download="SmartSathi-Resume.txt";
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    setTimeout(
+      ()=>{
+        URL.revokeObjectURL(url);
+      },
+      1000
+    );
+
+  };
+
+</script>
 </body>
 </html>

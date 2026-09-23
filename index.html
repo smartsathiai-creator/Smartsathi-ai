@@ -4883,5 +4883,418 @@ if(window.openToolPage && !window.__ssResumeWrapped){
 
 })();
 </script>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Resume Builder Pro</title>
+  <style>
+    :root {
+      --primary: #1a56db;
+      --sidebar-bg: #f1f5f9;
+      --text: #1e293b;
+      --border: #cbd5e1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #e2e8f0; color: var(--text); }
+
+    /* Landing Screen */
+    .landing-screen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; background: #0f172a; color: #fff; text-align: center; padding: 20px; }
+    .landing-screen h1 { font-size: 38px; font-weight: 800; }
+    .landing-screen p { font-size: 16px; color: #94a3b8; max-width: 540px; line-height: 1.6; }
+    .btn-launch { padding: 14px 32px; background: #2563eb; color: #fff; border-radius: 8px; font-size: 16px; font-weight: 700; border: none; cursor: pointer; }
+    .btn-launch:hover { background: #1d4ed8; }
+
+    /* App Workspace */
+    .app-screen { display: none; }
+    .nav-bar { background: #0f172a; color: #fff; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .nav-bar h2 { font-size: 18px; font-weight: 700; }
+    .nav-actions { display: flex; gap: 10px; }
+    .btn-act { padding: 9px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; color: #fff; }
+    .btn-doc { background: #2563eb; }
+    .btn-pdf { background: #dc2626; }
+    .btn-reset { background: #475569; }
+
+    .app-container { max-width: 1540px; margin: 18px auto; padding: 0 16px; display: grid; grid-template-columns: 490px 1fr; gap: 20px; }
+    .editor-box { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); height: calc(100vh - 90px); overflow-y: auto; }
+    .preview-box { display: flex; justify-content: center; height: calc(100vh - 90px); overflow-y: auto; padding-bottom: 30px; background: #94a3b8; padding-top: 18px; border-radius: 10px; }
+
+    /* Form Styles */
+    .sec-title { font-size: 12px; font-weight: 800; text-transform: uppercase; color: #475569; margin: 18px 0 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; }
+    .sec-title:first-child { margin-top: 0; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 4px; }
+    input, textarea { width: 100%; padding: 8px 11px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; outline: none; font-family: inherit; }
+    input:focus, textarea:focus { border-color: var(--primary); }
+    textarea { min-height: 75px; resize: vertical; }
+
+    .ai-wrapper { display: flex; justify-content: flex-end; margin-top: 5px; }
+    .btn-ai { padding: 5px 12px; background: linear-gradient(135deg, #7c3aed, #db2777); color: #fff; border: none; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .btn-ai:hover { opacity: 0.9; }
+
+    .tpl-selector { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+    .tpl-btn { padding: 9px; border: 1px solid var(--border); background: #fff; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .tpl-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+
+    .color-pickers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .color-box { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #475569; }
+    .color-box input[type="color"] { width: 40px; height: 32px; padding: 2px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; }
+
+    /* Resume Document Layouts */
+    .resume-doc { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-size: 12px; line-height: 1.5; color: #334155; position: relative; }
+    
+    /* Layout 1: Executive 2-Column */
+    .resume-doc.tpl-executive { display: grid; grid-template-columns: 32% 68%; }
+    .tpl-executive .side-col { background: var(--sidebar-bg); padding: 20px 16px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 15px; }
+    .tpl-executive .main-col { padding: 24px 22px; display: flex; flex-direction: column; gap: 15px; }
+    .tpl-executive .r-photo { width: 95px; height: 115px; object-fit: cover; border-radius: 6px; border: 2px solid var(--primary); display: none; margin: 0 auto 10px; }
+    .tpl-executive .r-name { font-size: 24px; font-weight: 800; color: var(--primary); text-transform: uppercase; }
+    .tpl-executive .r-role { font-size: 13px; font-weight: 700; color: #475569; margin-top: 2px; text-transform: uppercase; }
+    .tpl-executive .s-title { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--primary); border-bottom: 1.5px solid var(--primary); padding-bottom: 3px; margin-bottom: 6px; }
+    .tpl-executive .m-title { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--primary); border-bottom: 1.5px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 6px; }
+
+    /* Layout 2: Modern Minimal */
+    .resume-doc.tpl-modern { padding: 22mm 20mm; display: flex; flex-direction: column; gap: 14px; }
+    .tpl-modern .side-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: transparent; padding: 0; border: 0; }
+    .tpl-modern .main-col { display: flex; flex-direction: column; gap: 14px; padding: 0; }
+    .tpl-modern .top-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 12px; margin-bottom: 4px; }
+    .tpl-modern .r-name { font-size: 28px; font-weight: 800; color: var(--primary); text-transform: uppercase; }
+    .tpl-modern .r-role { font-size: 14px; font-weight: 700; color: #64748b; }
+    .tpl-modern .r-photo { width: 85px; height: 105px; object-fit: cover; border-radius: 50%; border: 2px solid var(--primary); display: none; }
+    .tpl-modern .s-title, .tpl-modern .m-title { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 3px; margin-bottom: 6px; }
+
+    /* Layout 3: Classic Corporate */
+    .resume-doc.tpl-classic { padding: 18mm; display: flex; flex-direction: column; gap: 14px; }
+    .tpl-classic .top-header { background: var(--primary); color: #fff; padding: 16px 20px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+    .tpl-classic .r-name { font-size: 26px; font-weight: 800; color: #fff; text-transform: uppercase; }
+    .tpl-classic .r-role { font-size: 13px; font-weight: 600; color: #e2e8f0; margin-top: 3px; }
+    .tpl-classic .r-photo { width: 80px; height: 95px; object-fit: cover; border-radius: 4px; border: 2px solid #fff; display: none; }
+    .tpl-classic .side-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: transparent; padding: 0; border: 0; }
+    .tpl-classic .main-col { display: flex; flex-direction: column; gap: 14px; padding: 0; }
+    .tpl-classic .s-title, .tpl-classic .m-title { font-size: 12px; font-weight: 800; text-transform: uppercase; background: #f1f5f9; color: var(--primary); padding: 4px 8px; border-left: 4px solid var(--primary); margin-bottom: 6px; }
+
+    /* Layout 4: Creative Edge */
+    .resume-doc.tpl-creative { padding: 20mm; border-left: 12px solid var(--primary); display: flex; flex-direction: column; gap: 15px; }
+    .tpl-creative .top-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px dashed var(--border); padding-bottom: 14px; }
+    .tpl-creative .r-name { font-size: 26px; font-weight: 800; color: var(--primary); }
+    .tpl-creative .r-role { font-size: 14px; font-weight: 600; color: #475569; }
+    .tpl-creative .r-photo { width: 90px; height: 105px; object-fit: cover; border-radius: 8px; border: 2px solid var(--primary); display: none; }
+    .tpl-creative .side-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: transparent; padding: 0; border: 0; }
+    .tpl-creative .main-col { display: flex; flex-direction: column; gap: 14px; padding: 0; }
+    .tpl-creative .s-title, .tpl-creative .m-title { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; border-bottom: 2px solid var(--sidebar-bg); padding-bottom: 3px; margin-bottom: 6px; }
+
+    /* Common Components */
+    .text-block { font-size: 12px; white-space: pre-line; line-height: 1.6; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .skill-tag { font-size: 11px; font-weight: 600; background: #fff; border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px; color: var(--text); }
+    
+    .edu-table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 11px; }
+    .edu-table th, .edu-table td { border: 1px solid var(--border); padding: 5px 8px; text-align: left; }
+    .edu-table th { background: #f8fafc; font-weight: 700; color: #0f172a; }
+
+    .r-footer { margin-top: auto; padding-top: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .footer-left { font-size: 11px; font-weight: 600; color: #475569; line-height: 1.8; }
+    .footer-right { text-align: center; width: 140px; }
+    .sign-image { max-width: 120px; max-height: 45px; object-fit: contain; margin-bottom: 4px; display: none; }
+    .sign-bar { border-top: 1px solid #475569; padding-top: 4px; font-size: 11px; font-weight: 700; color: #1e293b; }
+
+    @media print {
+      body * { visibility: hidden; }
+      .resume-doc, .resume-doc * { visibility: visible; }
+      .resume-doc { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Landing Screen -->
+  <div id="landingScreen" class="landing-screen">
+    <h1>Smart Resume Builder</h1>
+    <p>Build executive, high-impact resumes tailored to modern recruitment systems with built-in AI polishing tools.</p>
+    <button class="btn-launch" onclick="launchEditor()">Launch Resume Builder</button>
+  </div>
+
+  <!-- Workspace Screen -->
+  <div id="appScreen" class="app-screen">
+    <div class="nav-bar">
+      <h2>SmartSathi AI Pro Workspace</h2>
+      <div class="nav-actions">
+        <button class="btn-act btn-doc" onclick="downloadDoc()">Download DOCX</button>
+        <button class="btn-act btn-pdf" onclick="window.print()">Download PDF / Print</button>
+        <button class="btn-act btn-reset" onclick="resetForm()">Clear All</button>
+      </div>
+    </div>
+
+    <div class="app-container">
+      <!-- Editor Controls -->
+      <div class="editor-box">
+        <div class="sec-title">1. Layout Templates</div>
+        <div class="tpl-selector">
+          <button class="tpl-btn active" onclick="switchTemplate('tpl-executive', this)">Executive (2-Column)</button>
+          <button class="tpl-btn" onclick="switchTemplate('tpl-modern', this)">Modern Minimal</button>
+          <button class="tpl-btn" onclick="switchTemplate('tpl-classic', this)">Classic Corporate</button>
+          <button class="tpl-btn" onclick="switchTemplate('tpl-creative', this)">Creative Edge</button>
+        </div>
+
+        <div class="sec-title">2. Color Customization</div>
+        <div class="color-pickers">
+          <div class="color-box">
+            <input type="color" id="primaryColor" value="#1a56db" onchange="changeColor('--primary', this.value)">
+            <span>Primary Color</span>
+          </div>
+          <div class="color-box">
+            <input type="color" id="sidebarColor" value="#f1f5f9" onchange="changeColor('--sidebar-bg', this.value)">
+            <span>Sidebar Color</span>
+          </div>
+        </div>
+
+        <div class="sec-title">3. Profile Media (Optional)</div>
+        <div class="form-group">
+          <label>Profile Photo</label>
+          <input type="file" accept="image/*" onchange="uploadImage(this, 'photo')">
+        </div>
+        <div class="form-group">
+          <label>Authorized Signature</label>
+          <input type="file" accept="image/*" onchange="uploadImage(this, 'sign')">
+        </div>
+
+        <div class="sec-title">4. Personal & Contact Information</div>
+        <div class="form-group"><label>Full Name</label><input id="name" placeholder="Full Name" oninput="render()"></div>
+        <div class="form-group"><label>Professional Role / Title</label><input id="role" placeholder="Professional Title" oninput="render()"></div>
+        <div class="form-group"><label>Phone Number</label><input id="phone" placeholder="Phone Number" oninput="render()"></div>
+        <div class="form-group"><label>Email Address</label><input id="email" placeholder="Email Address" oninput="render()"></div>
+        <div class="form-group"><label>Location (City, Country)</label><input id="loc" placeholder="City, Country" oninput="render()"></div>
+        <div class="form-group"><label>Personal Details / Languages</label><textarea id="personalInfo" placeholder="Personal details, languages..." oninput="render()"></textarea></div>
+
+        <div class="sec-title">5. Professional Summary</div>
+        <div class="form-group">
+          <textarea id="summary" placeholder="Write professional summary..." oninput="render()"></textarea>
+          <div class="ai-wrapper"><button class="btn-ai" onclick="aiPolish('summary')">Polish with AI</button></div>
+        </div>
+
+        <div class="sec-title">6. Key Competencies & Skills</div>
+        <div class="form-group">
+          <label>Skills (Comma Separated)</label>
+          <input id="skills" placeholder="e.g. Data Entry, Process Optimization, MS Excel" oninput="render()">
+          <div class="ai-wrapper"><button class="btn-ai" onclick="aiPolish('skills')">Polish with AI</button></div>
+        </div>
+
+        <div class="sec-title">7. Professional Experience</div>
+        <div class="form-group">
+          <textarea id="exp" style="min-height: 90px;" placeholder="Role | Organization | Year&#10;- Key responsibility&#10;- Achievement" oninput="render()"></textarea>
+          <div class="ai-wrapper"><button class="btn-ai" onclick="aiPolish('exp')">Polish with AI</button></div>
+        </div>
+
+        <div class="sec-title">8. Education (Format: Degree | Board/Univ | Year | Result)</div>
+        <div class="form-group">
+          <textarea id="edu" placeholder="Degree | University | Year | Completed" oninput="render()"></textarea>
+          <div class="ai-wrapper"><button class="btn-ai" onclick="aiPolish('edu')">Polish with AI</button></div>
+        </div>
+
+        <div class="sec-title">9. Certifications & Additional Training</div>
+        <div class="form-group">
+          <textarea id="cert" placeholder="Certificate Title | Issuing Body" oninput="render()"></textarea>
+          <div class="ai-wrapper"><button class="btn-ai" onclick="aiPolish('cert')">Polish with AI</button></div>
+        </div>
+
+        <div class="sec-title">10. Place & Date (Opposite Signature)</div>
+        <div class="form-group"><label>Place</label><input id="place" placeholder="City" oninput="render()"></div>
+        <div class="form-group"><label>Date / Month / Year</label><input id="date" placeholder="DD Month YYYY" oninput="render()"></div>
+      </div>
+
+      <!-- Preview Sheet -->
+      <div class="preview-box">
+        <div id="resumeSheet" class="resume-doc tpl-executive">
+          
+          <div class="side-col">
+            <div style="text-align:center;">
+              <img id="p-photo" class="r-photo" alt="Photo">
+            </div>
+            <div>
+              <div class="s-title">Contact</div>
+              <div class="text-block" id="p-contact"></div>
+            </div>
+            <div>
+              <div class="s-title">Key Competencies</div>
+              <div class="skill-tags" id="p-skills"></div>
+            </div>
+            <div>
+              <div class="s-title">Personal Details</div>
+              <div class="text-block" id="p-personal"></div>
+            </div>
+          </div>
+
+          <div class="main-col">
+            <div class="top-header">
+              <div>
+                <div class="r-name" id="p-name"></div>
+                <div class="r-role" id="p-role"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="m-title">Professional Profile</div>
+              <div class="text-block" id="p-summary"></div>
+            </div>
+
+            <div>
+              <div class="m-title">Work Experience</div>
+              <div class="text-block" id="p-exp"></div>
+            </div>
+
+            <div>
+              <div class="m-title">Education</div>
+              <table class="edu-table">
+                <thead>
+                  <tr><th>Qualification</th><th>Board / University</th><th>Year</th><th>Status</th></tr>
+                </thead>
+                <tbody id="p-edu"></tbody>
+              </table>
+            </div>
+
+            <div>
+              <div class="m-title">Certifications & Training</div>
+              <div class="text-block" id="p-cert"></div>
+            </div>
+
+            <div class="r-footer">
+              <div class="footer-left">
+                <div><strong>Place:</strong> <span id="p-place"></span></div>
+                <div><strong>Date:</strong> <span id="p-date"></span></div>
+              </div>
+              <div class="footer-right">
+                <img id="p-sign" class="sign-image" alt="Signature">
+                <div class="sign-bar">Authorized Signature</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const el = function(id) { return document.getElementById(id); };
+    const val = function(id) { return el(id).value.trim(); };
+
+    function launchEditor() {
+      el('landingScreen').style.display = 'none';
+      el('appScreen').style.display = 'block';
+      render();
+    }
+
+    function switchTemplate(tplClass, btn) {
+      const buttons = document.querySelectorAll('.tpl-btn');
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+      }
+      btn.classList.add('active');
+      el('resumeSheet').className = 'resume-doc ' + tplClass;
+    }
+
+    function changeColor(prop, value) {
+      document.documentElement.style.setProperty(prop, value);
+    }
+
+    function uploadImage(input, type) {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          if (type === 'photo') {
+            el('p-photo').src = e.target.result;
+            el('p-photo').style.display = 'block';
+          } else {
+            el('p-sign').src = e.target.result;
+            el('p-sign').style.display = 'inline-block';
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function aiPolish(field) {
+      const polishMap = {
+        summary: "Detail-oriented and proactive professional skilled in documentation, database management, and process coordination. Seeking to leverage strong organizational and operational capabilities to drive efficiency.",
+        skills: "Business Operations, Database Auditing, Workflow Optimization, Advanced MS Excel, Stakeholder Communication, Quality Assurance",
+        exp: "Operations Associate | Enterprise Solutions\n- Optimized operational workflows, accelerating document processing timelines by 25%.\n- Managed comprehensive reporting frameworks and ensured strict data integrity across records.\n- Resolved customer escalations promptly with high satisfaction benchmarks.",
+        edu: "Bachelor of Business Administration | Premier University | 2024 | First Class\nHigher Secondary Education | State Board | 2020 | Distinction",
+        cert: "Certificate in Advanced Data Operations | Professional Institute\nVerified Training in Process Quality Control & Auditing"
+      };
+
+      if (polishMap[field]) {
+        el(field).value = polishMap[field];
+        render();
+      }
+    }
+
+    function render() {
+      el('p-name').textContent = val('name');
+      el('p-role').textContent = val('role');
+
+      const contactArr = [];
+      if (val('phone')) { contactArr.push('Phone: ' + val('phone')); }
+      if (val('email')) { contactArr.push('Email: ' + val('email')); }
+      if (val('loc')) { contactArr.push('Location: ' + val('loc')); }
+      el('p-contact').innerHTML = contactArr.join('<br>');
+
+      el('p-personal').textContent = val('personalInfo');
+      el('p-summary').textContent = val('summary');
+      el('p-exp').textContent = val('exp');
+      el('p-cert').textContent = val('cert');
+      el('p-place').textContent = val('place');
+      el('p-date').textContent = val('date');
+
+      const skillVal = val('skills');
+      if (skillVal) {
+        const skills = skillVal.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+        el('p-skills').innerHTML = skills.map(function(s) { return '<span class="skill-tag">' + s + '</span>'; }).join('');
+      } else {
+        el('p-skills').innerHTML = '';
+      }
+
+      const eduVal = val('edu');
+      if (eduVal) {
+        const rows = eduVal.split('\n').map(function(r) { return r.trim(); }).filter(Boolean);
+        el('p-edu').innerHTML = rows.map(function(r) {
+          const p = r.split('|').map(function(x) { return x.trim(); });
+          return '<tr><td>' + (p[0] || '') + '</td><td>' + (p[1] || '') + '</td><td>' + (p[2] || '') + '</td><td>' + (p[3] || '') + '</td></tr>';
+        }).join('');
+      } else {
+        el('p-edu').innerHTML = '';
+      }
+    }
+
+    function resetForm() {
+      if (confirm('Clear all input fields?')) {
+        const inputs = document.querySelectorAll('input:not([type="color"]), textarea');
+        for (let i = 0; i < inputs.length; i++) {
+          inputs[i].value = '';
+        }
+        el('p-photo').style.display = 'none';
+        el('p-photo').src = '';
+        el('p-sign').style.display = 'none';
+        el('p-sign').src = '';
+        render();
+      }
+    }
+
+    function downloadDoc() {
+      const docName = val('name') || 'Resume';
+      const content = '<html><head><meta charset="utf-8"></head><body>' + el('resumeSheet').outerHTML + '</body></html>';
+      const blob = new Blob([content], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = docName.replace(/\\s+/g, '_') + '_Resume.doc';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+</body>
+</html>
 </body>
 </html>
